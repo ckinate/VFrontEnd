@@ -1,0 +1,1522 @@
+﻿<div bsModal #createVendorModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createVendorModal" aria-hidden="true" [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="row align-items-center mb-2 text-center">
+                <!-- <b> <p style="color:#3f4adf;font-size:20px;"> <i>Click on next Tab when done</i> </p> </b> -->
+            </div>
+            <form *ngIf="active" #vendorForm="ngForm" novalidate autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>{{l("Create New Vendor")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <tabset id="create_vendor_tabset_container">
+                        <tab heading="{{ 'Vendor Data' | localize }}">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="Vendor_CompanyName">{{
+                                        l("Company Name")
+                                        }}*</label>
+                                    <input type="text" id="Vendor_CompanyName" class="form-control"
+                                        [(ngModel)]="vendor.companyName" name="CompanyName" minlength="1"
+                                        maxlength="100" pattern="[a-zA-Z0-9 ]*" required />
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="Vendor_Address">{{
+                                        l("Address")
+                                        }}*</label>
+                                    <input type="text" id="Vendor_Address" class="form-control"
+                                        [(ngModel)]="vendor.address" pattern="[a-zA-Z0-9 ]*" name="Address"
+                                        minlength="1" maxlength="200" />
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="Vendor_RCNumber">{{
+                                        l("RC Number")
+                                        }}</label>
+                                    <input type="text" id="Vendor_RCNumber" pattern="[a-zA-Z0-9 ]*" class="form-control"
+                                        [(ngModel)]="vendor.rcNumber" name="rcNumber" minlength="1" maxlength="200" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <!-- <div class="form-group col-md-6">
+                                    <label for="Vendor_OfficePhone">{{l("Office Phone")}}*</label>
+                                    <button (click)="AddMoreEmailDetails()" class="btn btn-xs btn-primary"
+                                        style="padding: 1px; margin-left: 12px">
+                                        + Add Phone Details
+                                    </button>
+                                    <input type="text" #Vendor_OfficePhone="ngModel" id="Vendor_OfficePhone"
+                                        class="form-control" [(ngModel)]="vendor.officePhone" name="OfficePhone"
+                                        (keypress)="keyPressAlphaNumericWithCharacters($event)" (paste)="
+                                            keyPressAlphaNumericWithCharacters($event)" required min="11" maxlength="15" />
+                                    <validation-messages [formCtrl]="Vendor_OfficePhone"></validation-messages>
+                                </div> -->
+
+
+                                <div class="form-group col-md-6">
+                                    <label for="OfficePhone">{{l("Office Phone")}}*</label>
+                                    <button (click)="AddMoreEmailDetails()" class="btn btn-xs btn-primary"
+                                        style="padding: 1px; margin-left: 12px">
+                                        + Add Phone Details
+                                    </button>
+                                    <div class="input-group">
+                                        <div class="btn-group" dropdown #dropdown="bs-dropdown" [autoClose]="true">
+                                            <button id="button-basic" dropdownToggle type="button"
+                                                class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic">
+                                                {{selectedCountry.dial_code}} <span class="caret"></span></button>
+                                            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
+                                                aria-labelledby="button-basic">
+                                                <li role="menuitem" *ngFor="let item of listOfCountries"><a
+                                                        class="dropdown-item"
+                                                        (click)="onSelectedCountry(item)">{{item.name}}</a></li>
+
+                                            </ul>
+                                        </div>
+                                        <input type="text" class="form-control" #OfficePhone="ngModel" id="OfficePhone"
+                                            (paste)="keyPressAlphaNumericWithCharacters($event)" required min="11"
+                                            [attr.maxLength]="limitForPhoneNumber(selectedCountry, officePhone)"
+                                            name="OfficePhone" aria-label="Text input with dropdown button"
+                                            pattern="[0-9-]+" [(ngModel)]="officePhone"
+                                            (keyup)="onCountryPress($event)" />
+                                        <validation-messages [formCtrl]="officePhone"></validation-messages>
+                                    </div>
+                                    <div style="color: red;" *ngIf="!validatePhoneNumber(officePhone, selectedCountry)">
+                                        Invalid phone number</div>
+                                </div>
+
+
+                                <div class="form-group col-md-6">
+                                    <label for="Vendor_Mobile">{{l("Mobile")}}*</label>
+                                    <!-- <input type="text" #Vendor_Mobile="ngModel" id="Vendor_Mobile" class="form-control"
+                                        [(ngModel)]="vendor.mobile" name="Mobile" required (keypress)="keyPressAlphaNumericWithCharacters($event)"
+                                        (paste)="keyPressAlphaNumericWithCharacters($event)" min="11" maxlength="15" />
+                                    <validation-messages [formCtrl]="Vendor_Mobile"></validation-messages> -->
+                                    <div class="input-group">
+                                        <div class="btn-group" dropdown #dropdown="bs-dropdown" [autoClose]="true">
+                                            <button id="button-basic" dropdownToggle type="button"
+                                                class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic">
+                                                {{selectedMobileCountry.dial_code}} <span class="caret"></span></button>
+                                            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
+                                                aria-labelledby="button-basic">
+                                                <li role="menuitem" aria-disabled="true"
+                                                    *ngFor="let item of listOfCountries"><a class="dropdown-item"
+                                                        (click)="onSelectedCountryForMobile(item)">{{item.name}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <input type="text" class="form-control" #Mobile="ngModel" id="Mobile"
+                                            (paste)="keyPressAlphaNumericWithCharacters($event)" required
+                                            pattern="[0-9-]*" min="11"
+                                            [attr.maxLength]="limitForPhoneNumber(selectedMobileCountry, mobile)"
+                                            name="Mobile" aria-label="Text input with dropdown button"
+                                            [(ngModel)]="mobile" (keyup)="onCountryPressForMobile($event)" />
+                                    </div>
+                                    <div style="color: red;"
+                                        *ngIf="!validatePhoneNumber(mobile, selectedMobileCountry)">Invalid phone number
+                                    </div>
+
+                                    <validation-messages [formCtrl]="mobile"></validation-messages>
+                                </div>
+
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="Vendor_Email">{{l("Email")}}*</label>
+                                    <input type="text" #Vendor_Email="ngModel" id="Vendor_Email" class="form-control"
+                                        [(ngModel)]="vendor.email" name="Email" minlength="1" maxlength="200" required
+                                        pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$" />
+                                    <validation-messages [formCtrl]="Vendor_Email"></validation-messages>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="Vendor_DateRegistered">{{l("Company Reg. Date")}}</label>
+                                    <input required class="form-control rounded" name="dateRegistered" type="text"
+                                        pattern="[a-zA-Z0-9 ]*" [maxDate]="date" bsDatepicker datePickerLuxonModifier
+                                        id="Vendor_DateRegistered" readonly="readonly" #ed="bsDatepicker"
+                                        [(ngModel)]="dateRegister" />
+                                    <div class="input-group-append">
+                                        <button class="input-group-append btn btn-outline-secondary"
+                                            (click)="ed.toggle()" type="button">
+                                            <i class="fa fa-calendar"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="Vendor_TaxIdentificationNumber">{{l("Tax Identification
+                                        Number")}}</label>
+                                    <input type="text" maxlength="12" id="Vendor_TaxIdentificationNumber"
+                                        class="form-control" (keypress)="keyPressNumericWithHyphen($event)" required
+                                        min="10" pattern="[a-zA-Z0-9 ]*" maxlength="15" [(ngModel)]="
+                                            vendor.taxIdentificationNumber
+                                        " name="Vendor_TaxIdentificationNumber" />
+                                    <div style="color: red;" *ngIf="!validateTin()">Invalid Tin</div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="Vendor_ContactPerson">{{
+                                        l("Contact Person")
+                                        }}</label>
+                                    <button (click)="AddMoreContactDetails()" class="btn btn-xs btn-primary"
+                                        style="padding: 1px; margin-left: 12px">
+                                        + Add Contact Person Details
+                                    </button>
+                                    <input type="text" id="Vendor_ContactPerson" class="form-control"
+                                        [(ngModel)]="vendor.contactPerson" name="ContactPerson" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="Vendor_ContactDesignation">{{
+                                        l("Contact Designation")
+                                        }}</label>
+                                    <input type="text" id="Vendor_ContactDesignation" class="form-control"
+                                        [(ngModel)]="vendor.contactDesignation" name="ContactDesignation" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="Vendor_ContactPhone">{{l("Contact Phone")}}</label>
+                                    <!-- <input type="text" id="Vendor_ContactPhone" class="form-control"
+                                        [(ngModel)]="vendor.contactPhone" name="ContactPhone"
+                                        (keypress)="keyPressAlphaNumericWithCharacters($event)"
+                                        (paste)="keyPressAlphaNumericWithCharacters($event)" min="11" maxlength="15" /> -->
+
+                                    <div class="input-group">
+                                        <div class="btn-group" dropdown #dropdown="bs-dropdown" [autoClose]="true">
+                                            <button id="button-basic" dropdownToggle type="button"
+                                                class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic">
+                                                {{selectedContactCountry.dial_code}} <span
+                                                    class="caret"></span></button>
+                                            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
+                                                aria-labelledby="button-basic">
+                                                <li role="menuitem" *ngFor="let item of listOfCountries"><a
+                                                        class="dropdown-item"
+                                                        (click)="onSelectedCountryForContactP(item)">{{item.name}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <input type="text" class="form-control" #contactPhone="ngModel"
+                                            id="contactPhone" (paste)="keyPressAlphaNumericWithCharacters($event)"
+                                            required min="11"
+                                            [attr.maxLength]="limitForPhoneNumber(selectedContactCountry, ContactPhone)"
+                                            name="contactPhone" aria-label="Text input with dropdown button"
+                                            pattern="[0-9-]*" [(ngModel)]="ContactPhone"
+                                            (keyup)="onCountryPressForContactP($event)" />
+                                    </div>
+                                    <div style="color: red;"
+                                        *ngIf="!validatePhoneNumber(ContactPhone, selectedContactCountry)">Invalid phone
+                                        number</div>
+
+
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="Vendor_ContactEmail">{{
+                                        l("Contact Email")
+                                        }}</label>
+                                    <input type="text" #Vendor_ContactEmail="ngModel" id="Vendor_ContactEmail"
+                                        class="form-control" [(ngModel)]="vendor.contactEmail" name="ContactEmail"
+                                        minlength="1" pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"
+                                        maxlength="200" />
+                                    <validation-messages [formCtrl]="Vendor_ContactEmail"></validation-messages>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="Vendor_Fax">{{
+                                        l("Fax")
+                                        }}</label>
+                                    <input type="text" id="Vendor_Fax" pattern="[a-zA-Z0-9 ]*" class="form-control"
+                                        [(ngModel)]="vendor.fax" name="Fax" (keypress)="
+                                            keyPressAlphaNumericWithCharacters(
+                                                $event
+                                            )
+                                        " />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="Vendor_website">{{
+                                        l("website")
+                                        }}</label>
+                                    <input type="text" #Vendor_website="ngModel" id="Vendor_website"
+                                        class="form-control" [(ngModel)]="vendor.website" name="website" required
+                                        pattern="^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[A-Za-z0-9]+([\-\.]{1}[A-Za-z0-9]+)*\.[A-Za-z]{2,5}(:[0-9]{1,5})?(\/.*)?$" />
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="Vendor_CompanyType">{{
+                                        l("Company Type")
+                                        }}</label>
+                                    <select id="Vendor_CompanyType" class="form-control"
+                                        [(ngModel)]="vendor.companyType" name="CompanyType">
+                                        <option>Private</option>
+                                        <option>Partnarship</option>
+                                        <option>Public Limited Company</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-4  checkbox-inline">
+                                    <label class="checkbox" for="useForeignAccount">{{l("Use Foreign Account")
+                                        }}</label>
+                                    <input type="checkbox" name="useForeignAccount" id="useforeignAccount"
+                                        [(ngModel)]="vendor.useforeignAccount" />
+                                </div>
+                            </div>
+
+                        </tab>
+
+                        <tab heading="{{ 'Vendor Category' | localize }}">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="VendorCategoryId">Category *</label>
+                                    <select placeholder="..Vendor Category.." class="form-control rounded"
+                                        (ngModelChange)="OnSelectCategory($event)
+                                        " [(ngModel)]="vendorCategoryId" name="VendorCategoryId"
+                                        class="form-control rounded">
+                                        <option disabled selected [ngValue]=null>....Select Category.....</option>
+                                        <option *ngFor="let item of VenCategory" [value]="item.id">
+                                            {{ item.categoryName }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="SubCategory">Sub-Category *</label>
+                                    <!-- <select placeholder="..Vendor Sub-Category.." class="form-control rounded"
+                                        [(ngModel)]="subcategoryId" name="SubcategoryId"
+                                        class="form-control rounded">
+                                        <option disabled selected [ngValue]=null>....Select Sub-Category</option>
+                                        <option *ngFor="let item of SubCategory" [value]="item.id">
+                                            {{ item.narration }}
+                                        </option>
+                                    </select> -->
+
+                                    <ng-multiselect-dropdown aria-placeholder="Select Fee Type"
+                                        [(ngModel)]="subCategoryArray" [ngModelOptions]="{
+                                      standalone: true
+                                     }" (onSelect)=" selectFeeType($event)" (onSelectAll)="onSelectAllFeeType($event)"
+                                        [settings]="dropdownSettings" [data]="SubCategory"
+                                        (onDeSelect)="onDeSelectFeeType($event)" required>
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                        </tab>
+
+                        <tab heading="Bank Details">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <br />
+                                    <button (click)="AddMoreForeignDetails()" class="btn btn-xs btn-primary"
+                                        style="padding: 1px; margin-left: 12px">
+                                        + Add Foreign Bank Detail
+                                    </button>
+                                    <br /><br />
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="bankName">{{"Select Bank Name" | localize}}*</label>
+                                        <select name="bankNames" id="bankNames" [(ngModel)]="userBankProfile.bankCode
+                                            " ngModel class="form-control">
+                                            <option value="0" selected="selected">
+                                                Select Bank Name
+                                            </option>
+                                            <option *ngFor="let x of Banks" [ngValue]="x.bankCode">
+                                                {{ x.bankName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="accNo">{{"Account Number" | localize}}*</label>
+                                        <input id="accNo" type="text" name="accNo" class="form-control" [(ngModel)]="
+                                                userBankProfile.beneficiaryAccountNumber
+                                            " (keypress)="keyPressNumeric($event)" pattern="[a-zA-Z0-9 ]*" required
+                                            min="10" maxlength="10" />
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <button class="btn btn-xs btn-primary" style="padding: 1px; margin-top: 22px"
+                                        (click)=" validateAccount2()" [buttonBusy]="processing"
+                                        [busyText]="l('SavingWithThreeDot')">Validate Account</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="accName">{{
+                                            "Account Name" | localize
+                                            }}
+                                            *</label>
+                                        <input id="accName" #accnameInput="ngModel" class="form-control" type="text"
+                                            name="accName" [(ngModel)]="userBankProfile.beneficiaryName
+                                            " required pattern="[a-zA-Z0-9 ]*" maxlength="64" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="bankCode">{{" Bank Code" | localize}}*</label>
+                                        <input id="bankCode" #bankCodeInput="ngModel" pattern="[a-zA-Z0-9 ]*"
+                                            class="form-control" type="text" disabled name="bankCode"
+                                            [(ngModel)]="userBankProfile.bankCode" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="BankAddress">{{
+                                            "Bank Address" | localize
+                                            }}</label>
+                                        <input id="BankAddress" class="form-control" pattern="[a-zA-Z0-9 ]*" type="text"
+                                            name="BankAddress" [(ngModel)]="vendor.bankAddress" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="VatRegNumber">{{
+                                            " VAT Reg Number" | localize
+                                            }}</label>
+                                        <input id="VatRegNumber" class="form-control" type="text"
+                                            (keypress)="keyPressNumeric($event)" pattern="[a-zA-Z0-9 ]*" min="1"
+                                            maxlength="15" name="VatRegNumber" [(ngModel)]="vendor.vatRegNumber" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>{{"Default Currency"}}</label>
+                                        <ng-select [(ngModel)]="userBankProfile.beneficiaryCurrencyName"
+                                            name="DefaultBeneficiallyName"
+                                            (change)="changeCurrency(userBankProfile.beneficiaryCurrencyName)">
+                                            <ng-option *ngFor="let currency of currencyDtoList"
+                                                [value]="currency.currencyName">
+                                                {{currency.currencyName}}
+                                            </ng-option>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </tab>
+                        <tab heading="{{ 'Questionnaire' | localize }}">
+                            <div class="table-scrollable table-scrollable-borderless">
+                                <table class="table table-hover table-light">
+                                    <thead>
+                                        <tr class="uppercase">
+                                            <th style="width: 500px">
+                                                {{ l("Question") }}
+                                            </th>
+                                            <th style="width: 300px">
+                                                {{ l("Response") }}
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tr *ngFor="
+                                            let m of Questionarelist;
+                                            let i = index
+                                        ">
+                                        <td style="width: 150px">
+                                            <span class="ui-column-title"></span>
+                                            {{ m.question }}<span class="text-danger"
+                                                *ngIf="m.isCompulsory == true">*</span>
+                                        </td>
+                                        <td style="width: 150px">
+                                            <input type="textarea" pattern="[a-zA-Z0-9 ]*" class="form-control"
+                                                id="response" name="m.{{ i }}.answer" [(ngModel)]="m.response"
+                                                placeholder="{{
+                                                    'Response' | localize
+                                                }}" />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </tab>
+
+                        <tab heading="{{ 'DocumentUpload' | localize }}">
+                            <div class="table-scrollable table-scrollable-borderless">
+                                <a>
+                                    <p style="color: #3f4adf; font-size: 5px">
+                                        <i>Please click the upload icon to
+                                            begin upload</i>
+                                    </p>
+                                </a>
+                                <table class="table table-hover table-light">
+                                    <thead>
+                                        <tr class="uppercase">
+                                            <th style="width: 500px">
+                                                {{ l("DocumentTitle") }}
+                                            </th>
+                                            <th style="width: 300px"><a href="javascript:;" (click)="showDocument()">
+                                                    <i class="fa fa-upload">Upload</i></a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tr *ngFor="let item of docUplSetupList;let i = index">
+                                        <td style="width: 150px">
+                                            <span class="ui-column-title"></span>
+                                            {{ item.documentTitle }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </tab>
+
+                        <tab heading="Additional Contacts Person" *ngIf="isAddMoreContactDetails">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="ContactPerson">Contact Name</label>
+                                        <input id="ContactPerson" type="text" pattern="[a-zA-Z0-9 ]*"
+                                            name="ContactPerson" class="form-control"
+                                            [(ngModel)]="vendorContactDetailsDto.contactName" name="contactPersonName"
+                                            minlength="1" maxlength="256" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <!-- <label for="contactPersonPhoneNumber">Contact Phone</label>
+                                        <input id="contactPersonPhoneNumber" type="text" name="contactPersonPhoneNumber"
+                                            class="form-control" [(ngModel)]="vendorContactDetailsDto.phoneNumber"
+                                            #contactPersonPhoneNumber="ngModel"
+                                            (keypress)="keyPressAlphaNumericWithCharacters($event)"
+                                             minlength="1"
+                                            maxlength="15" />
+                                        <validation-messages [formCtrl]="contactPersonPhoneNumber">
+                                        </validation-messages> -->
+
+                                        <label for="contactPersonPhoneNumber">Contact Phone</label>
+                                        <div class="input-group">
+                                            <div class="btn-group" dropdown #dropdown="bs-dropdown" [autoClose]="true">
+                                                <button id="button-basic" dropdownToggle type="button"
+                                                    class="btn btn-primary dropdown-toggle"
+                                                    aria-controls="dropdown-basic">
+                                                    {{selectedExContactCountry.dial_code}} <span
+                                                        class="caret"></span></button>
+                                                <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
+                                                    aria-labelledby="button-basic">
+                                                    <li role="menuitem" *ngFor="let item of listOfCountries"><a
+                                                            class="dropdown-item"
+                                                            (click)="onSelectedCountryForExtraCont(item)">{{item.name}}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <input type="text" class="form-control" pattern="[0-9-]*" id="phone"
+                                                (paste)="keyPressAlphaNumericWithCharacters($event)" required min="11"
+                                                [attr.maxLength]="limitForPhoneNumber(selectedExContactCountry, phone)"
+                                                name="phone" aria-label="Text input with dropdown button"
+                                                [(ngModel)]="phone" (keyup)="onCountryPressForExtraCont($event)" />
+                                        </div>
+                                        <div style="color: red;"
+                                            *ngIf="!validatePhoneNumber(phone, selectedExContactCountry)">Invalid phone
+                                            number</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="contactPersonEmail">Contact Email</label>
+                                        <input id="contactPersonEmail" type="text" name="contactPersonEmail"
+                                            class="form-control" [(ngModel)]="vendorContactDetailsDto.email"
+                                            #MoreContactEmail="ngModel" minlength="1" required
+                                            pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$" maxlength="200" />
+
+                                        <div style="color: red;" *ngIf="validateEmail()">Invalid Email</div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" style="margin-bottom: 10px">
+                                    <br />
+                                    <button type="button" class="btn btn-xs btn-primary"
+                                        (click)="AddMoreContactDetailsItem()">Save</button>
+                                    <br />
+                                </div>
+                                <div class="col-sm-12">
+                                    <table class="col-sm-12 table-hover table-light">
+                                        <thead>
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Contact Person</th>
+                                                <th>Contact Phone</th>
+                                                <th>Contact Email</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let items of vendorContactDetailsList; let i = index;">
+                                                <td>
+                                                    <button type="button" class="btn btn-xs btn-danger"
+                                                        (click)="RemoveMoreContactDetailsItem(i)">Remove</button>
+                                                </td>
+                                                <td>
+                                                    <span>{{items.contactName}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{items.phone}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{items.email}}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </tab>
+
+                        <tab heading="Additional Emails And Phones" *ngIf="isAddMoreEmailDetails">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="AddMoreEmail"> Email </label>
+                                        <input id="ContactEmail" type="text" name="AddMoreEmail" class="form-control"
+                                            [(ngModel)]="vendorEmailAndPhoneNumberDto.email" #ContactEmail="ngModel"
+                                            pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$" minlength="1"
+                                            maxlength="200" />
+                                        <div style="color: red;" *ngIf="validateAddMoreEmail()">Invalid Email</div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <!-- <div class="form-group">
+                                        <label for="AddMorePhoneNumber">Add Phone Number </label>
+                                        <input id="PhoneNumber" type="text" name="AddMorePhoneNumber"
+                                            class="form-control" [(ngModel)]="vendorEmailAndPhoneNumberDto.phoneNumber
+                                            " (keypress)="keyPressAlphaNumericWithCharacters($event)"
+                                            #PhoneNumber="ngModel" (paste)="keyPressAlphaNumericWithCharacters($event)" minlength="1"
+                                            maxlength="15" />
+                                        <validation-messages [formCtrl]="PhoneNumber"></validation-messages>
+                                    </div>                                     -->
+                                    <!-- <div class="input-group">
+                                        <label for="AddMorePhoneNumber">Phone Number </label>
+                                        <div class="btn-group" dropdown #dropdown="bs-dropdown" [autoClose]="true"><button
+                                                id="button-basic" dropdownToggle type="button"
+                                                class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic">
+                                                {{selectedCountry.dial_code}} <span class="caret"></span></button>
+                                            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
+                                                aria-labelledby="button-basic">
+                                                <li role="menuitem" *ngFor="let item of listOfCountries"><a class="dropdown-item"
+                                                    >{{item.name}}</a></li>
+                                            </ul>
+                                        </div>
+                                        <input type="text" class="form-control" #phoneNumber="ngModel" id="phoneNumber"
+                                         required min="11" maxlength="15" name="phoneNumber"
+                                            aria-label="Text input with dropdown button" [(ngModel)]="phoneNumber"/>
+                                        </div> -->
+
+                                    <div class="form-group">
+                                        <label for="contactPersonPhoneNumber"> Phone Number</label>
+                                        <div class="input-group">
+                                            <div class="btn-group" dropdown #dropdown="bs-dropdown" [autoClose]="true">
+                                                <button id="dial_code" dropdownToggle type="button"
+                                                    class="btn btn-primary dropdown-toggle"
+                                                    aria-controls="dropdown-basic">
+                                                    {{selectedCountryEmail.dial_code}} <span
+                                                        class="caret"></span></button>
+                                                <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
+                                                    aria-labelledby="button-basic">
+                                                    <li role="menuitem" *ngFor="let item of listOfCountries"><a
+                                                            class="dropdown-item"
+                                                            (click)="onSelectedCountryForEmailandPhone(item)">{{item.name}}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <input type="text" class="form-control" pattern="[0-9-]*" id="phoneNumber"
+                                                (paste)="keyPressAlphaNumericWithCharacters($event)" required
+                                                [attr.maxLength]="limitForPhoneNumber(selectedCountryEmail, phoneNumber)"
+                                                name="phoneNumber" aria-label="Text input with dropdown button"
+                                                [(ngModel)]="phoneNumber"
+                                                (keyup)="onCountryPressForEmailandPhone($event)" />
+                                        </div>
+                                        <div style="color: red;"
+                                            *ngIf="!validatePhoneNumber(phoneNumber, selectedCountryEmail)">Invalid
+                                            phone number</div>
+
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" style="margin-bottom: 10px">
+                                    <button class="btn btn-xs btn-primary"
+                                        (click)="AddMoreEmailDetailsItem()">Save</button>
+                                </div>
+                                <div class="col-sm-12">
+                                    <table class="col-sm-12 table-hover table-light">
+                                        <thead>
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Email</th>
+                                                <th>Phone Number</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor=" let items of vendorEmailAndPhoneNumberList; let i = index">
+                                                <td>
+                                                    <button type="button" class="btn btn-xs btn-danger"
+                                                        (click)=" RemoveGetMoreEmailDetailsItem(i)">
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                                <td>{{ items.email }}</td>
+                                                <td>
+                                                    <span>{{items.phoneNumber}}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </tab>
+
+                        <tab heading="Add Foreign Banks" *ngIf="isAddMoreForeignDetails">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="foreignBank">{{ l("Bank Name") }} </label>
+                                        <input id="foreignBank" type="text" pattern="[a-zA-Z0-9 ]*" name="foreignBank"
+                                            class="form-control" [(ngModel)]="
+                                                vendorForeignAccountDto.foreignBank
+                                            " name="foreignBank" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="foreignAccountName">{{ l("Account Name") }} </label>
+                                        <input id="foreignAccountName" type="text" class="form-control"
+                                            pattern="[a-zA-Z0-9 ]*" [(ngModel)]="
+                                                vendorForeignAccountDto.foreignAccountName
+                                            " name="foreignAccountName" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="ForeignaccNo">{{ l("Account Number") }} </label>
+                                        <input id="foreignAccountNumber" type="text" class="form-control"
+                                            pattern="[a-zA-Z0-9 ]*" [(ngModel)]="
+                                                vendorForeignAccountDto.foreignAccountNumber
+                                            " (keypress)="
+                                                keyPressNumbersDecimal($event)
+                                            " name="foreignAccountNumber" minlength="3" />
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="foreignBankCode">{{ l("Bank Code") }} </label>
+                                        <input id="foreignBankCode" type="text" name="foreignBankCode"
+                                            pattern="[a-zA-Z0-9 ]*" [(ngModel)]="
+                                                vendorForeignAccountDto.foreignBankCode
+                                            " class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="foreignCountry">{{ l("Country") }} </label>
+                                        <select name="foreignCountry" class="form-control" [(ngModel)]="
+                                                vendorForeignAccountDto.foreignCountry
+                                            ">
+                                            <option value="">Country...</option>
+                                            <option value="Afganistan">
+                                                Afghanistan
+                                            </option>
+                                            <option value="Albania">
+                                                Albania
+                                            </option>
+                                            <option value="Algeria">
+                                                Algeria
+                                            </option>
+                                            <option value="American Samoa">
+                                                American Samoa
+                                            </option>
+                                            <option value="Andorra">
+                                                Andorra
+                                            </option>
+                                            <option value="Angola">
+                                                Angola
+                                            </option>
+                                            <option value="Anguilla">
+                                                Anguilla
+                                            </option>
+                                            <option value="Antigua &amp; Barbuda">
+                                                Antigua &amp; Barbuda
+                                            </option>
+                                            <option value="Argentina">
+                                                Argentina
+                                            </option>
+                                            <option value="Armenia">
+                                                Armenia
+                                            </option>
+                                            <option value="Aruba">Aruba</option>
+                                            <option value="Australia">
+                                                Australia
+                                            </option>
+                                            <option value="Austria">
+                                                Austria
+                                            </option>
+                                            <option value="Azerbaijan">
+                                                Azerbaijan
+                                            </option>
+                                            <option value="Bahamas">
+                                                Bahamas
+                                            </option>
+                                            <option value="Bahrain">
+                                                Bahrain
+                                            </option>
+                                            <option value="Bangladesh">
+                                                Bangladesh
+                                            </option>
+                                            <option value="Barbados">
+                                                Barbados
+                                            </option>
+                                            <option value="Belarus">
+                                                Belarus
+                                            </option>
+                                            <option value="Belgium">
+                                                Belgium
+                                            </option>
+                                            <option value="Belize">
+                                                Belize
+                                            </option>
+                                            <option value="Benin">Benin</option>
+                                            <option value="Bermuda">
+                                                Bermuda
+                                            </option>
+                                            <option value="Bhutan">
+                                                Bhutan
+                                            </option>
+                                            <option value="Bolivia">
+                                                Bolivia
+                                            </option>
+                                            <option value="Bonaire">
+                                                Bonaire
+                                            </option>
+                                            <option value="Bosnia &amp; Herzegovina">
+                                                Bosnia &amp; Herzegovina
+                                            </option>
+                                            <option value="Botswana">
+                                                Botswana
+                                            </option>
+                                            <option value="Brazil">
+                                                Brazil
+                                            </option>
+                                            <option value="British Indian Ocean Ter">
+                                                British Indian Ocean Ter
+                                            </option>
+                                            <option value="Brunei">
+                                                Brunei
+                                            </option>
+                                            <option value="Bulgaria">
+                                                Bulgaria
+                                            </option>
+                                            <option value="Burkina Faso">
+                                                Burkina Faso
+                                            </option>
+                                            <option value="Burundi">
+                                                Burundi
+                                            </option>
+                                            <option value="Cambodia">
+                                                Cambodia
+                                            </option>
+                                            <option value="Cameroon">
+                                                Cameroon
+                                            </option>
+                                            <option value="Canada">
+                                                Canada
+                                            </option>
+                                            <option value="Canary Islands">
+                                                Canary Islands
+                                            </option>
+                                            <option value="Cape Verde">
+                                                Cape Verde
+                                            </option>
+                                            <option value="Cayman Islands">
+                                                Cayman Islands
+                                            </option>
+                                            <option value="Central African Republic">
+                                                Central African Republic
+                                            </option>
+                                            <option value="Chad">Chad</option>
+                                            <option value="Channel Islands">
+                                                Channel Islands
+                                            </option>
+                                            <option value="Chile">Chile</option>
+                                            <option value="China">China</option>
+                                            <option value="Christmas Island">
+                                                Christmas Island
+                                            </option>
+                                            <option value="Cocos Island">
+                                                Cocos Island
+                                            </option>
+                                            <option value="Colombia">
+                                                Colombia
+                                            </option>
+                                            <option value="Comoros">
+                                                Comoros
+                                            </option>
+                                            <option value="Congo">Congo</option>
+                                            <option value="Cook Islands">
+                                                Cook Islands
+                                            </option>
+                                            <option value="Costa Rica">
+                                                Costa Rica
+                                            </option>
+                                            <option value="Cote DIvoire">
+                                                Cote D'Ivoire
+                                            </option>
+                                            <option value="Croatia">
+                                                Croatia
+                                            </option>
+                                            <option value="Cuba">Cuba</option>
+                                            <option value="Curaco">
+                                                Curacao
+                                            </option>
+                                            <option value="Cyprus">
+                                                Cyprus
+                                            </option>
+                                            <option value="Czech Republic">
+                                                Czech Republic
+                                            </option>
+                                            <option value="Denmark">
+                                                Denmark
+                                            </option>
+                                            <option value="Djibouti">
+                                                Djibouti
+                                            </option>
+                                            <option value="Dominica">
+                                                Dominica
+                                            </option>
+                                            <option value="Dominican Republic">
+                                                Dominican Republic
+                                            </option>
+                                            <option value="East Timor">
+                                                East Timor
+                                            </option>
+                                            <option value="Ecuador">
+                                                Ecuador
+                                            </option>
+                                            <option value="Egypt">Egypt</option>
+                                            <option value="El Salvador">
+                                                El Salvador
+                                            </option>
+                                            <option value="Equatorial Guinea">
+                                                Equatorial Guinea
+                                            </option>
+                                            <option value="Eritrea">
+                                                Eritrea
+                                            </option>
+                                            <option value="Estonia">
+                                                Estonia
+                                            </option>
+                                            <option value="Ethiopia">
+                                                Ethiopia
+                                            </option>
+                                            <option value="Falkland Islands">
+                                                Falkland Islands
+                                            </option>
+                                            <option value="Faroe Islands">
+                                                Faroe Islands
+                                            </option>
+                                            <option value="Fiji">Fiji</option>
+                                            <option value="Finland">
+                                                Finland
+                                            </option>
+                                            <option value="France">
+                                                France
+                                            </option>
+                                            <option value="French Guiana">
+                                                French Guiana
+                                            </option>
+                                            <option value="French Polynesia">
+                                                French Polynesia
+                                            </option>
+                                            <option value="French Southern Ter">
+                                                French Southern Ter
+                                            </option>
+                                            <option value="Gabon">Gabon</option>
+                                            <option value="Gambia">
+                                                Gambia
+                                            </option>
+                                            <option value="Georgia">
+                                                Georgia
+                                            </option>
+                                            <option value="Germany">
+                                                Germany
+                                            </option>
+                                            <option value="Ghana">Ghana</option>
+                                            <option value="Gibraltar">
+                                                Gibraltar
+                                            </option>
+                                            <option value="Great Britain">
+                                                Great Britain
+                                            </option>
+                                            <option value="Greece">
+                                                Greece
+                                            </option>
+                                            <option value="Greenland">
+                                                Greenland
+                                            </option>
+                                            <option value="Grenada">
+                                                Grenada
+                                            </option>
+                                            <option value="Guadeloupe">
+                                                Guadeloupe
+                                            </option>
+                                            <option value="Guam">Guam</option>
+                                            <option value="Guatemala">
+                                                Guatemala
+                                            </option>
+                                            <option value="Guinea">
+                                                Guinea
+                                            </option>
+                                            <option value="Guyana">
+                                                Guyana
+                                            </option>
+                                            <option value="Haiti">Haiti</option>
+                                            <option value="Hawaii">
+                                                Hawaii
+                                            </option>
+                                            <option value="Honduras">
+                                                Honduras
+                                            </option>
+                                            <option value="Hong Kong">
+                                                Hong Kong
+                                            </option>
+                                            <option value="Hungary">
+                                                Hungary
+                                            </option>
+                                            <option value="Iceland">
+                                                Iceland
+                                            </option>
+                                            <option value="India">India</option>
+                                            <option value="Indonesia">
+                                                Indonesia
+                                            </option>
+                                            <option value="Iran">Iran</option>
+                                            <option value="Iraq">Iraq</option>
+                                            <option value="Ireland">
+                                                Ireland
+                                            </option>
+                                            <option value="Isle of Man">
+                                                Isle of Man
+                                            </option>
+                                            <option value="Israel">
+                                                Israel
+                                            </option>
+                                            <option value="Italy">Italy</option>
+                                            <option value="Jamaica">
+                                                Jamaica
+                                            </option>
+                                            <option value="Japan">Japan</option>
+                                            <option value="Jordan">
+                                                Jordan
+                                            </option>
+                                            <option value="Kazakhstan">
+                                                Kazakhstan
+                                            </option>
+                                            <option value="Kenya">Kenya</option>
+                                            <option value="Kiribati">
+                                                Kiribati
+                                            </option>
+                                            <option value="Korea North">
+                                                Korea North
+                                            </option>
+                                            <option value="Korea Sout">
+                                                Korea South
+                                            </option>
+                                            <option value="Kuwait">
+                                                Kuwait
+                                            </option>
+                                            <option value="Kyrgyzstan">
+                                                Kyrgyzstan
+                                            </option>
+                                            <option value="Laos">Laos</option>
+                                            <option value="Latvia">
+                                                Latvia
+                                            </option>
+                                            <option value="Lebanon">
+                                                Lebanon
+                                            </option>
+                                            <option value="Lesotho">
+                                                Lesotho
+                                            </option>
+                                            <option value="Liberia">
+                                                Liberia
+                                            </option>
+                                            <option value="Libya">Libya</option>
+                                            <option value="Liechtenstein">
+                                                Liechtenstein
+                                            </option>
+                                            <option value="Lithuania">
+                                                Lithuania
+                                            </option>
+                                            <option value="Luxembourg">
+                                                Luxembourg
+                                            </option>
+                                            <option value="Macau">Macau</option>
+                                            <option value="Macedonia">
+                                                Macedonia
+                                            </option>
+                                            <option value="Madagascar">
+                                                Madagascar
+                                            </option>
+                                            <option value="Malaysia">
+                                                Malaysia
+                                            </option>
+                                            <option value="Malawi">
+                                                Malawi
+                                            </option>
+                                            <option value="Maldives">
+                                                Maldives
+                                            </option>
+                                            <option value="Mali">Mali</option>
+                                            <option value="Malta">Malta</option>
+                                            <option value="Marshall Islands">
+                                                Marshall Islands
+                                            </option>
+                                            <option value="Martinique">
+                                                Martinique
+                                            </option>
+                                            <option value="Mauritania">
+                                                Mauritania
+                                            </option>
+                                            <option value="Mauritius">
+                                                Mauritius
+                                            </option>
+                                            <option value="Mayotte">
+                                                Mayotte
+                                            </option>
+                                            <option value="Mexico">
+                                                Mexico
+                                            </option>
+                                            <option value="Midway Islands">
+                                                Midway Islands
+                                            </option>
+                                            <option value="Moldova">
+                                                Moldova
+                                            </option>
+                                            <option value="Monaco">
+                                                Monaco
+                                            </option>
+                                            <option value="Mongolia">
+                                                Mongolia
+                                            </option>
+                                            <option value="Montserrat">
+                                                Montserrat
+                                            </option>
+                                            <option value="Morocco">
+                                                Morocco
+                                            </option>
+                                            <option value="Mozambique">
+                                                Mozambique
+                                            </option>
+                                            <option value="Myanmar">
+                                                Myanmar
+                                            </option>
+                                            <option value="Nambia">
+                                                Nambia
+                                            </option>
+                                            <option value="Nauru">Nauru</option>
+                                            <option value="Nepal">Nepal</option>
+                                            <option value="Netherland Antilles">
+                                                Netherland Antilles
+                                            </option>
+                                            <option value="Netherlands">
+                                                Netherlands (Holland, Europe)
+                                            </option>
+                                            <option value="Nevis">Nevis</option>
+                                            <option value="New Caledonia">
+                                                New Caledonia
+                                            </option>
+                                            <option value="New Zealand">
+                                                New Zealand
+                                            </option>
+                                            <option value="Nicaragua">
+                                                Nicaragua
+                                            </option>
+                                            <option value="Niger">Niger</option>
+                                            <option value="Nigeria">
+                                                Nigeria
+                                            </option>
+                                            <option value="Niue">Niue</option>
+                                            <option value="Norfolk Island">
+                                                Norfolk Island
+                                            </option>
+                                            <option value="Norway">
+                                                Norway
+                                            </option>
+                                            <option value="Oman">Oman</option>
+                                            <option value="Pakistan">
+                                                Pakistan
+                                            </option>
+                                            <option value="Palau Island">
+                                                Palau Island
+                                            </option>
+                                            <option value="Palestine">
+                                                Palestine
+                                            </option>
+                                            <option value="Panama">
+                                                Panama
+                                            </option>
+                                            <option value="Papua New Guinea">
+                                                Papua New Guinea
+                                            </option>
+                                            <option value="Paraguay">
+                                                Paraguay
+                                            </option>
+                                            <option value="Peru">Peru</option>
+                                            <option value="Phillipines">
+                                                Philippines
+                                            </option>
+                                            <option value="Pitcairn Island">
+                                                Pitcairn Island
+                                            </option>
+                                            <option value="Poland">
+                                                Poland
+                                            </option>
+                                            <option value="Portugal">
+                                                Portugal
+                                            </option>
+                                            <option value="Puerto Rico">
+                                                Puerto Rico
+                                            </option>
+                                            <option value="Qatar">Qatar</option>
+                                            <option value="Republic of Montenegro">
+                                                Republic of Montenegro
+                                            </option>
+                                            <option value="Republic of Serbia">
+                                                Republic of Serbia
+                                            </option>
+                                            <option value="Reunion">
+                                                Reunion
+                                            </option>
+                                            <option value="Romania">
+                                                Romania
+                                            </option>
+                                            <option value="Russia">
+                                                Russia
+                                            </option>
+                                            <option value="Rwanda">
+                                                Rwanda
+                                            </option>
+                                            <option value="St Barthelemy">
+                                                St Barthelemy
+                                            </option>
+                                            <option value="St Eustatius">
+                                                St Eustatius
+                                            </option>
+                                            <option value="St Helena">
+                                                St Helena
+                                            </option>
+                                            <option value="St Kitts-Nevis">
+                                                St Kitts-Nevis
+                                            </option>
+                                            <option value="St Lucia">
+                                                St Lucia
+                                            </option>
+                                            <option value="St Maarten">
+                                                St Maarten
+                                            </option>
+                                            <option value="St Pierre &amp; Miquelon">
+                                                St Pierre &amp; Miquelon
+                                            </option>
+                                            <option value="St Vincent &amp; Grenadines">
+                                                St Vincent &amp; Grenadines
+                                            </option>
+                                            <option value="Saipan">
+                                                Saipan
+                                            </option>
+                                            <option value="Samoa">Samoa</option>
+                                            <option value="Samoa American">
+                                                Samoa American
+                                            </option>
+                                            <option value="San Marino">
+                                                San Marino
+                                            </option>
+                                            <option value="Sao Tome &amp; Principe">
+                                                Sao Tome &amp; Principe
+                                            </option>
+                                            <option value="Saudi Arabia">
+                                                Saudi Arabia
+                                            </option>
+                                            <option value="Senegal">
+                                                Senegal
+                                            </option>
+                                            <option value="Serbia">
+                                                Serbia
+                                            </option>
+                                            <option value="Seychelles">
+                                                Seychelles
+                                            </option>
+                                            <option value="Sierra Leone">
+                                                Sierra Leone
+                                            </option>
+                                            <option value="Singapore">
+                                                Singapore
+                                            </option>
+                                            <option value="Slovakia">
+                                                Slovakia
+                                            </option>
+                                            <option value="Slovenia">
+                                                Slovenia
+                                            </option>
+                                            <option value="Solomon Islands">
+                                                Solomon Islands
+                                            </option>
+                                            <option value="Somalia">
+                                                Somalia
+                                            </option>
+                                            <option value="South Africa">
+                                                South Africa
+                                            </option>
+                                            <option value="Spain">Spain</option>
+                                            <option value="Sri Lanka">
+                                                Sri Lanka
+                                            </option>
+                                            <option value="Sudan">Sudan</option>
+                                            <option value="Suriname">
+                                                Suriname
+                                            </option>
+                                            <option value="Swaziland">
+                                                Swaziland
+                                            </option>
+                                            <option value="Sweden">
+                                                Sweden
+                                            </option>
+                                            <option value="Switzerland">
+                                                Switzerland
+                                            </option>
+                                            <option value="Syria">Syria</option>
+                                            <option value="Tahiti">
+                                                Tahiti
+                                            </option>
+                                            <option value="Taiwan">
+                                                Taiwan
+                                            </option>
+                                            <option value="Tajikistan">
+                                                Tajikistan
+                                            </option>
+                                            <option value="Tanzania">
+                                                Tanzania
+                                            </option>
+                                            <option value="Thailand">
+                                                Thailand
+                                            </option>
+                                            <option value="Togo">Togo</option>
+                                            <option value="Tokelau">
+                                                Tokelau
+                                            </option>
+                                            <option value="Tonga">Tonga</option>
+                                            <option value="Trinidad &amp; Tobago">
+                                                Trinidad &amp; Tobago
+                                            </option>
+                                            <option value="Tunisia">
+                                                Tunisia
+                                            </option>
+                                            <option value="Turkey">
+                                                Turkey
+                                            </option>
+                                            <option value="Turkmenistan">
+                                                Turkmenistan
+                                            </option>
+                                            <option value="Turks &amp; Caicos Is">
+                                                Turks &amp; Caicos Is
+                                            </option>
+                                            <option value="Tuvalu">
+                                                Tuvalu
+                                            </option>
+                                            <option value="Uganda">
+                                                Uganda
+                                            </option>
+                                            <option value="Ukraine">
+                                                Ukraine
+                                            </option>
+                                            <option value="United Arab Erimates">
+                                                United Arab Emirates
+                                            </option>
+                                            <option value="United Kingdom">
+                                                United Kingdom
+                                            </option>
+                                            <option value="United States of America">
+                                                United States of America
+                                            </option>
+                                            <option value="Uraguay">
+                                                Uruguay
+                                            </option>
+                                            <option value="Uzbekistan">
+                                                Uzbekistan
+                                            </option>
+                                            <option value="Vanuatu">
+                                                Vanuatu
+                                            </option>
+                                            <option value="Vatican City State">
+                                                Vatican City State
+                                            </option>
+                                            <option value="Venezuela">
+                                                Venezuela
+                                            </option>
+                                            <option value="Vietnam">
+                                                Vietnam
+                                            </option>
+                                            <option value="Virgin Islands (Brit)">
+                                                Virgin Islands (Brit)
+                                            </option>
+                                            <option value="Virgin Islands (USA)">
+                                                Virgin Islands (USA)
+                                            </option>
+                                            <option value="Wake Island">
+                                                Wake Island
+                                            </option>
+                                            <option value="Wallis &amp; Futana Is">
+                                                Wallis &amp; Futana Is
+                                            </option>
+                                            <option value="Yemen">Yemen</option>
+                                            <option value="Zaire">Zaire</option>
+                                            <option value="Zambia">
+                                                Zambia
+                                            </option>
+                                            <option value="Zimbabwe">
+                                                Zimbabwe
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>{{"Intermediary Bank Name"}}</label>
+                                        <input type="text" class="form-control" name="IntermediaryBankNameField"
+                                            [(ngModel)]="vendorForeignAccountDto.intermediaryBankName">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>{{"Intermediary Account Number"}}</label>
+                                        <input type="text" class="form-control" name="IntermediaryAccountNumberField"
+                                            [(ngModel)]="vendorForeignAccountDto.intermediaryAccountNumber">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>{{"Intermediary Swift Code"}}</label>
+                                        <input type="text" class="form-control" name="IntermediarySwiftCodeField"
+                                            [(ngModel)]="vendorForeignAccountDto.intermediarySwiftCode">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>{{"Intermediary Sort Code"}}</label>
+                                        <input type="text" class="form-control" name="IntermediarySortCodeField"
+                                            [(ngModel)]="vendorForeignAccountDto.intermediarySortCode">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>{{"Intermediary Address"}}</label>
+                                        <input type="text" class="form-control" name="IntermediaryAddressField"
+                                            [(ngModel)]="vendorForeignAccountDto.intermediaryAddress">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12" style="margin-bottom: 10px">
+                                    <br />
+                                    <button class="btn btn-xs btn-primary" (click)="AddMoreForeignDetailsItem()">
+                                        Save
+                                    </button>
+                                    <br />
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="table-responsive" id="tableHorizontalScroll">
+                                        <table class=" table-hover table-light">
+                                            <thead>
+                                                <tr>
+                                                    <th style="white-space: nowrap; padding: 5px;">Action</th>
+                                                    <th style="white-space: nowrap; padding: 5px;">Bank</th>
+                                                    <th style="white-space: nowrap; padding: 5px;">Account Number</th>
+                                                    <th style="white-space: nowrap; padding: 5px;">Account Name</th>
+                                                    <th style="white-space: nowrap; padding: 5px;">Bank Code</th>
+                                                    <th style="white-space: nowrap; padding: 5px;">Country</th>
+                                                    <th style="white-space: nowrap; padding: 5px;">Int Bank Name</th>
+                                                    <th style="white-space: nowrap; padding: 5px;">Int Account Number
+                                                    </th>
+                                                    <th style="white-space: nowrap; padding: 5px;">Int Swift Code</th>
+                                                    <th style="white-space: nowrap; padding: 5px;">Int Sort Code</th>
+                                                    <th style="white-space: nowrap; padding: 5px;">Int Address</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor=" let items of vendorForeignAccountDtoList; let i = index ">
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <button type="button" class="btn btn-xs btn-danger"
+                                                            (click)="RemoveForeignDetailsItem(i)"> Remove </button>
+                                                    </td>
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <span>{{items.foreignBank}}</span>
+                                                    </td>
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <span>{{items.foreignAccountNumber}}</span>
+                                                    </td>
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <span>{{items.foreignAccountName}}</span>
+                                                    </td>
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <span>{{items.foreignBankCode}}</span>
+                                                    </td>
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <span>{{items.foreignCountry}}</span>
+                                                    </td>
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <span>{{items.intermediaryBankName}}</span>
+                                                    </td>
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <span>{{items.intermediaryAccountNumber}}</span>
+                                                    </td>
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <span>{{items.intermediarySwiftCode}}</span>
+                                                    </td>
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <span>{{items.intermediarySortCode}}</span>
+                                                    </td>
+                                                    <td style="white-space: nowrap; padding: 2px;">
+                                                        <span>{{items.intermediaryAddress}}</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </tab>
+                    </tabset>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default" (click)="close()">
+                        {{ l("Cancel") }}
+                    </button>
+                    <button type="submit" class="btn btn-primary blue" (click)="saveVendor()" [disabled]="
+                    !vendor.companyName ||
+                    !vendor.address ||
+                   !officePhone ||
+                    !mobile ||
+                    !vendor.email ||
+                    !vendorCategoryId ||
+                    subCategoryArray.length == 0 ||
+                    (!userBankProfile.bankCode && !vendor.useforeignAccount )||
+                    (!userBankProfile.beneficiaryAccountNumber && !vendor.useforeignAccount) ||
+                    (!userBankProfile.beneficiaryName && !vendor.useforeignAccount)
+                " [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                        <i class="fa fa-save"></i><span>{{ l("Save All") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- <appdocuments #appdocuments></appdocuments> -->
+<appfileupload #fileUpload></appfileupload>

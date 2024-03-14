@@ -1,0 +1,1184 @@
+<div [@routerTransition]>
+    <div class="content d-flex flex-column flex-column-fluid">
+        <sub-header [title]="'Onboarding Vendors' | localize">
+        </sub-header>
+
+        <div [class]="containerClass" class="mt-3">
+            <div class="card card-custom">
+                <div class="card-body" [busyIf]="primengTableHelper.isLoading">
+                    <div class="row" style="width: 1200px; ">
+                        <div class="col-12 my-5">
+
+
+                            <form class="col-16 " autocomplete="off" #ProductUpload="ngForm" (ngSubmit)="searchInit()">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div
+                                            style="flex-direction: row; display: flex;border-width: 1px;border-color: black;border-radius: 20px;border-style: solid;">
+                                            <i class="strip-button fa fa-search"
+                                                style="margin-top: 10px;margin-left: 10px;"></i>
+                                            <input id="description" name="description" style="border: 0ch;width: 80%;"
+                                                type="search" multiple="true" (input)="onChange()"
+                                                [(ngModel)]="searchWord" class="form-control rounded"
+                                                placeholder="Search">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-2" style="top: -20px; position: relative;">
+                                        <label for="filterTypes"> {{ l("Status:") }}</label>
+                                        <ng-select placeholder="Select" name="status" id="status"
+                                            [(ngModel)]="statusName" (ngModelChange)="changeStatue(statusName)">
+                                            <!-- <ng-option value= 1> Not Started</ng-option> -->
+                                            <ng-option value=2> Submitted</ng-option>
+                                            <ng-option value=3>Processing</ng-option>
+                                            <ng-option value=4>Enquiry</ng-option>
+                                            <ng-option value=5>Completed Registration</ng-option>
+                                        </ng-select>
+                                    </div>
+
+
+                                    <div class="col-3 ml-2" style="top: -16px; position: relative;">
+                                        <div>
+                                            Date Range:
+                                        </div>
+                                        <input class="form-control" id="StartEndRange" name="StartEndRange"
+                                            #drp="bsDaterangepicker" readonly="readonly" bsDaterangepicker
+                                            dateRangePickerLuxonModifier [(date)]="dateRange" />
+
+                                    </div>
+
+
+                                    <div class="col-1">
+                                        <button type="submit" (click)="searchInit()" class="btn btn-primary">
+                                            {{ l("Search") }}
+                                        </button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button class="btn btn-primary" (click)="downloadCSVFile()">{{"Export To
+                                            Excel"}}</button>
+
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="card card-custom mt-0">
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+
+                                <div class="primeng-datatable-container">
+                                    <p-table #dataTable [value]="onboardingVendorsData.result.items" [rows]="10"
+                                        [rowsPerPageOptions]="[5, 10, 15, 20]" rows="{{
+                                            primengTableHelper.defaultRecordsCountPerPage
+                                        }}" [lazy]="false" scrollable="true" [paginator]="false" ScrollWidth="100%"
+                                        responsive="primengTableHelper.isResponsive"
+                                        resizableColumns="primengTableHelper.resizableColumns" dataKey="id"
+                                        [filterDelay]="0" [rowHover]="true" styleClass="ui-table-customers"
+                                        sortMode="multiple">
+
+
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th style="width: 130px">
+                                                    {{ l("Actions") }}
+                                                </th>
+                                                <th style="width: 200px" pSortableColumn="companyName">
+                                                    {{ l("Company Name") }}
+                                                    <p-sortIcon field="companyName"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 150px" pSortableColumn="dueDiligenceCompleted">
+                                                    {{ l("Due Diligent") }}
+                                                    <p-sortIcon field="dueDiligenceCompleted"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 150px"
+                                                    pSortableColumn="registrationCertificateNumber">
+                                                    {{ l("Reg Number") }}
+                                                    <p-sortIcon field="registrationCertificateNumber"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 150px" pSortableColumn="country">
+                                                    {{ l("Country") }}
+                                                    <p-sortIcon field="country"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 150px" pSortableColumn="email">
+                                                    {{ l("Email") }}
+                                                    <p-sortIcon field="email"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 150px" pSortableColumn="mobilePhoneNumber">
+                                                    {{ l("Phone Number") }}
+                                                    <p-sortIcon field="mobilePhoneNumber"></p-sortIcon>
+                                                </th>
+
+
+                                                <th style="width: 150px" pSortableColumn="categoryName">
+                                                    {{ l("Category Name") }}
+                                                    <p-sortIcon field="categoryName"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 150px" pSortableColumn="subCategoryNames">
+                                                    {{ l("Sub Category") }}
+                                                    <p-sortIcon field="subCategoryNames"></p-sortIcon>
+                                                </th>
+
+                                                <th style="width: 200px" pSortableColumn="created">
+                                                    {{ l("Date Created") }}
+                                                    <p-sortIcon field="created"></p-sortIcon>
+                                                </th>
+
+                                                <th style="width: 200px" pSortableColumn="lastModified">
+                                                    {{ l("Date Last Modified") }}
+                                                    <p-sortIcon field="lastModified"></p-sortIcon>
+                                                </th>
+
+
+
+
+
+
+
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-record="$implicit">
+                                            <tr>
+                                                <td style="width: 130px">
+                                                    <div class="btn-group dropdown" dropdown container="body">
+                                                        <button class="dropdown-toggle btn btn-sm btn-primary"
+                                                            dropdownToggle>
+                                                            <i class="fa fa-cog"></i><span class="caret"></span>
+                                                            {{ l("Actions") }}
+                                                        </button>
+                                                        <ul class="dropdown-menu" *dropdownMenu>
+                                                            <li>
+                                                                <a href="javascript:;" (click)=" viewDetails(record.id)"
+                                                                    class="dropdown-item">{{l("View
+                                                                    Details")}}</a>
+                                                            </li>
+                                                            <li *ngIf="record.status == variousStatus.Submitted">
+                                                                <a href="javascript:;" class="dropdown-item"
+                                                                    (click)=" AcceptVendor(record)"
+                                                                    [buttonBusy]="processing"
+                                                                    [busyText]="l('SavingWithThreeDot')">{{l("Accept")}}</a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="javascript:;" class="dropdown-item" (click)="
+                                                            documentModal(record.documents )
+                                                                ">
+                                                                    {{"View Documents"}} <i
+                                                                        class="fa fa-download"></i></a>
+                                                            </li>
+
+                                                            <li
+                                                                *ngIf="(record.status == variousStatus.Submitted ||record.status == variousStatus.Processing )">
+                                                                <a href="javascript:;" class="dropdown-item"
+                                                                    (click)="queryVendorComp.QueryVendor(record)">{{l("Enquiry")}}</a>
+                                                            </li>
+
+                                                            <li *ngIf="record.status == variousStatus.Processing">
+                                                                <a href="javascript:;" class="dropdown-item"
+                                                                    (click)="CompleteVendorOboarding(record)"
+                                                                    [buttonBusy]="processing"
+                                                                    [busyText]="l('SavingWithThreeDot')">{{l("Complete
+                                                                    Registration")}}</a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="javascript:;" class="dropdown-item"
+                                                                    (click)="this.queryVendorComp.ViewQueryResponse(record.id)">{{l("Enquiry
+                                                                    Response")}}</a>
+                                                            </li>
+                                                            <li *ngIf="record.isLock == false">
+                                                                <a href="javascript:;" class="dropdown-item"
+                                                                    (click)="lockUser(record)">{{l("Lock
+                                                                    Vendor")}}</a>
+                                                            </li>
+                                                            <li *ngIf="record.isLock == true">
+                                                                <a href="javascript:;" class="dropdown-item"
+                                                                    (click)="UnlockUser(record)">{{l("Unlock
+                                                                    Vendor")}}</a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="javascript:;" class="dropdown-item" (click)="
+                                                                showAdminReplaceModal(record.id )
+                                                                ">
+                                                                    {{"Replace Admin Vendor"}}</a>
+                                                            </li>
+
+
+
+                                                        </ul>
+                                                    </div>
+                                                </td>
+
+                                                <td style="width: 200px">
+                                                    {{ record.companyName }}
+                                                </td>
+                                                <td style="width: 150px">
+                                                    <span *ngIf=" record.dueDiligenceCompleted == false"
+                                                        class="btn btn-warning">{{"No"}}</span>
+                                                    <span *ngIf="record.dueDiligenceCompleted"
+                                                        class="btn btn-success">{{"Yes"}}</span>
+
+                                                </td>
+                                                <td style="width: 150px">
+                                                    {{ record.registrationCertificateNumber }}
+                                                </td>
+                                                <td style="width: 150px">
+                                                    {{ record.country}}
+                                                </td>
+                                                <td style="width: 150px">
+                                                    {{ record.email }}
+                                                </td>
+                                                <td style="width: 150px">
+                                                    {{ record.mobilePhoneCallCode }} {{ record.mobilePhoneNumber }}
+                                                </td>
+
+                                                <td style="width: 150px">
+                                                    {{ record.categoryName }}
+                                                </td>
+                                                <td style="width: 150px">
+                                                    {{ record.subCategoryNames}}
+                                                </td>
+
+                                                <td style="width: 200px">
+                                                    {{ record.created|date:'dd / MM / yyyy, h:mm a'}}
+                                                </td>
+
+                                                <td style="width: 200px" *ngIf="record.lastModifiedBy">
+                                                    {{ record.lastModified |date:'dd / MM / yyyy, h:mm a'}}
+                                                </td>
+
+
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+
+                                    <div *ngIf="onboardingVendorsData?.result?.items?.length > 0"
+                                        class="d-flex justify-content-between align-items-center flex-wrap">
+                                        <div class="d-flex flex-wrap py-2 mr-3">
+                                            <button (click)="previousPage()"
+                                                [disabled]="!onboardingResultDto.hasPreviousPage"
+                                                class="btn btn-icon btn-sm btn-light-primary mr-2 my-1"><i
+                                                    class="ki ki-bold-arrow-back icon-xs"></i></button>
+                                            <span class="text-muted px-3 my-3">Page {{onboardingResultDto.pageNumber}}
+                                                of
+                                                {{onboardingResultDto.totalPages}}</span>
+                                            <button (click)="nextPage()" [disabled]="!onboardingResultDto.hasNextPage"
+                                                class="btn btn-icon btn-sm btn-light-primary mr-2 my-1"><i
+                                                    class="ki ki-bold-arrow-next icon-xs"></i></button>
+                                        </div>
+                                        <div class="d-flex align-items-center py-3">
+
+
+                                            <select
+                                                class="form-control form-control-sm text-primary font-weight-bold mr-4 border-0 bg-light-primary"
+                                                style="width: 75px;" (change)="changeSize($event.target.value)">
+                                                <option value="10">10</option>
+                                                <option value="20">20</option>
+                                                <option value="30">30</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- <div class="card-body" [perfectScrollbar]>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <th style="width: 50px">Action</th>
+                                        <th class="m-widget11__label" (click)="sort('companyName')"
+                                            style="width: 100px"> Company Name <i
+                                                [ngClass]="getSortClass('companyName')"></i>
+                                        </th>
+                                        <th class="m-widget11__label" (click)="sort('registrationCertificateNumber')"
+                                            style="width: 100px"> Reg Number <i
+                                                [ngClass]="getSortClass('registrationCertificateNumber')"></i>
+                                        </th>
+                                        <th class="m-widget11__label" (click)="sort('country')" style="width: 100px">
+                                            Country <i [ngClass]="getSortClass('country')"></i>
+                                        </th>
+                                        <th class="m-widget11__label" (click)="sort('email')" style="width: 100px">
+                                            Email <i [ngClass]="getSortClass('email')"></i>
+                                        <th class="m-widget11__label" (click)="sort('mobilePhoneNumber')"
+                                            style="width: 100px"> Phone Number <i
+                                                [ngClass]="getSortClass('mobilePhoneNumber')"></i>
+                                        </th>
+                                        <th class="m-widget11__label" (click)="sort('categoryName')"
+                                            style="width: 100px"> Category Name <i
+                                                [ngClass]="getSortClass('categoryName')"></i>
+                                        </th>
+                                        <th class="m-widget11__label" (click)="sort('subCategoryNames')"
+                                            style="width: 100px"> SubCategory <i
+                                                [ngClass]="getSortClass('subCategoryNames')"></i>
+                                        </th>
+
+
+                                    </thead>
+
+                                    <tbody>
+                                        <tr
+                                            *ngFor="let record of onboardingVendorsData.result.items; let index = index">
+                                            <td style="width: 50px">
+
+                                                <div class="btn-group dropdown" dropdown container="body">
+                                                    <button dropdownToggle
+                                                        class="dropdown-toggle btn btn-sm btn-primary">
+                                                        <i class="fa fa-cog"></i><span class="caret"></span>
+                                                        {{ "Actions" | localize }}
+                                                    </button>
+                                                    <ul class="dropdown-menu" *dropdownMenu>
+
+                                                        <li>
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)="viewDetails(record.id)">{{l("View Details")}}</a>
+                                                        </li>
+                                                        <li *ngIf="record.status == variousStatus.Submitted">
+                                                            <a href="javascript:;" class="dropdown-item" [buttonBusy]="processing"
+                                                            [busyText]="l('SavingWithThreeDot')" (click)="AcceptVendor(record)">{{l("Accept")}}</a>
+                                                        </li>
+                                                        <li >
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)="documentModal(record.documents )">{{l("View Documents")}} <i class="fa fa-download"></i></a>
+                                                        </li>
+                                                        <li *ngIf="(record.status == variousStatus.Submitted ||record.status == variousStatus.Processing )">
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)="queryVendorComp.QueryVendor(record)">{{l("Enquiry")}}</a>
+                                                        </li>
+                                                        <li *ngIf="record.status == variousStatus.Processing" >
+                                                            <a href="javascript:;" class="dropdown-item" [buttonBusy]="processing"
+                                                                (click)="CompleteVendorOboarding(record)" [busyText]="l('SavingWithThreeDot')">{{l("Complete Onboarding")}}</a>
+                                                        </li>
+                                                        <li >
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)="queryVendorComp.ViewQueryResponse(record.id)">{{l("Enquiry Response")}}</a>
+                                                        </li>
+                                                        <li class="mt-2" *ngIf="record.isLock == false">
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)="lockUser(record)">{{"Lock Vendor"}}</a>
+                                                        </li>
+                                                        <li *ngIf="record.isLock == true">
+                                                            <a href="javascript:;" class="dropdown-item" (click)="UnlockUser(record)">
+                                                                {{"Unlock Vendor"}} </a>
+                                                        </li>
+                                                        <li *ngIf="record.isLock == true">
+                                                            <a href="javascript:;" class="dropdown-item" (click)="showAdminReplaceModal(record.id )">
+                                                                {{"Replace Admin Vendor"}} </a>
+                                                        </li>
+
+
+
+                                                    </ul>
+                                                </div>
+
+
+
+                                             
+                                            </td>
+
+                                            <td style="width: 100px">
+                                                {{ record.companyName }}
+                                            </td>
+                                            <td style="width: 100px">
+                                                {{ record.registrationCertificateNumber }}
+                                            </td>
+                                            <td style="width: 100px">
+                                                {{ record.country}}
+                                            </td>
+                                            <td style="width: 100px">
+                                                {{ record.email }}
+                                            </td>
+                                            <td style="width: 100px">
+                                                {{ record.mobilePhoneCallCode }} {{ record.mobilePhoneNumber }}
+                                            </td>
+                                            <td style="width: 100px">
+                                                {{ record.categoryName }}
+                                            </td>
+                                            <td style="width: 100px">
+                                                {{ record.subCategoryNames}}
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                            <div *ngIf="onboardingVendorsData?.result?.items?.length > 0"
+                                class="d-flex justify-content-between align-items-center flex-wrap">
+                                <div class="d-flex flex-wrap py-2 mr-3">
+                                    <button (click)="previousPage()" [disabled]="!onboardingResultDto.hasPreviousPage"
+                                        class="btn btn-icon btn-sm btn-light-primary mr-2 my-1"><i
+                                            class="ki ki-bold-arrow-back icon-xs"></i></button>
+                                    <span class="text-muted px-3 my-3">Page {{onboardingResultDto.pageNumber}} of
+                                        {{onboardingResultDto.totalPages}}</span>
+                                    <button (click)="nextPage()" [disabled]="!onboardingResultDto.hasNextPage"
+                                        class="btn btn-icon btn-sm btn-light-primary mr-2 my-1"><i
+                                            class="ki ki-bold-arrow-next icon-xs"></i></button>
+                                </div>
+                                <div class="d-flex align-items-center py-3">
+                                    <div class="d-flex align-items-center" *ngIf="isLoading">
+                                        <div class="mr-2 text-muted">Loading...</div>
+                                        <div class="spinner spinner-primary mr-10"></div>
+                                    </div>
+
+                                    <select
+                                        class="form-control form-control-sm text-primary font-weight-bold mr-4 border-0 bg-light-primary"
+                                        style="width: 75px;" (change)="changeSize($event.target.value)">
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div> -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div bsModal #sendAdmainReplacement="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
+    [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog ">
+
+        <div class="modal-content">
+            <form autocomplete="off" novalidate #sendAdminReplaceForm="ngForm"
+                (ngSubmit)="saveAdminReplacement(sendAdminReplaceForm)">
+                <div class="modal-header">
+                    <h4> Vendor Admin Replacement</h4>
+                    <button type="button" class="close" (click)="closeAdminReplaceModal()"
+                        [attr.aria-label]="l('Close')">
+                        <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class=" col-12 form-group">
+
+                            <label for="VadminName">{{
+                                "Vendor Admin Name" | localize
+                                }}</label>
+
+                            <input type="text" class="form-control" id="VadminName" name="vAdminName" required
+                                [(ngModel)]="replacementInvitationDto.adminName" #ReplaceANameID="ngModel" />
+
+                            <div *ngIf="ReplaceANameID.touched">
+                                <!-- <p *ngIf="ReplaceANameID.errors?.pattern" style="color: red;">Enter a valid name without
+                                    special Character
+                                </p> -->
+                                <p *ngIf="ReplaceANameID.errors?.required" style="color: red;">This is required
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class=" col-12 form-group">
+
+                            <label for="adminEmail">{{
+                                "Vendor Admin Email" | localize
+                                }}</label>
+
+                            <input type="email" class="form-control" id="adminEmail" name="AdminEmail" required
+                                [(ngModel)]=" replacementInvitationDto.adminEmail"
+                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" #AEmailId="ngModel" />
+                            <div *ngIf="AEmailId.touched">
+                                <p *ngIf="AEmailId.errors?.pattern" style="color: red;">This is not a valid Email!!!</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" (click)="closeAdminReplaceModal()">
+                        {{ l("Close") }}
+                    </button>
+
+                    <button type="submit" flex="15" [disabled]="!sendAdminReplaceForm.form.valid"
+                        class="btn btn-primary" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                        {{ "Save" | localize }}
+                    </button>
+                </div>
+
+            </form>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<div bsModal #vendorDetailsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="vendorDetailsModal" aria-hidden="true" [config]="{ backdrop: 'static' }">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>{{l("Vendor Details")}}</span>
+                </h4>
+                <button (click)="generatePDF()" style="text-align: center;" class="btn btn-primary"
+                    [buttonBusy]="processPdf" [busyText]="l('SavingWithThreeDot')" [disabled]="processPdf">Generate
+                    PDF</button>
+                <button type="button" class="btn btn-default" (click)=" closeModal()">
+                    {{ l("Close") }}
+                </button>
+            </div>
+
+            <div class="modal-body" id="pEl">
+                <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Vendor Data</h4>
+                <span *ngFor="let vendor of filterVendorDetails ">
+                    <div class="row">
+
+                        <div class="col-6 mb-2">
+
+                            <span style="font-size: 1em; font-weight: bolder;">{{l("Company Name:")}}</span>
+                            {{ vendor.companyName }}
+                        </div>
+
+                        <div class="col-6 mb-2">
+
+                            <span style="font-size: 1em; font-weight: bolder;">{{l("Address:")}}</span>
+                            {{vendor.registerAddress }}
+
+                        </div>
+
+                        <div class="col-6 mb-2">
+
+                            <span style="font-size: 1em; font-weight: bolder;">{{l("RC Number:")}}</span>
+                            {{ vendor.registrationCertificateNumber}}
+                        </div>
+
+
+                        <div class="col-6 mb-2">
+
+                            <span style="font-size: 1em; font-weight: bolder;">{{l("Office Phone:")}}</span>
+                            {{ vendor.officePhoneCallCode }} {{ vendor.officePhoneNumber }}
+                        </div>
+
+                        <div class="col-6 mb-2">
+
+                            <span style="font-size: 1em; font-weight: bolder;">{{l("Mobile:")}}</span>
+                            {{ vendor.mobilePhoneCallCode}}{{ vendor.mobilePhoneNumber}}
+                        </div>
+                        <div class="col-6 mb-2"><span
+                                style="font-size: 1em; font-weight: bolder;">{{l("Email:")}}</span>{{vendor.email}}
+                        </div>
+                        <div class="col-6 mb-2"><span style="font-size: 1em; font-weight: bolder;">{{l("Incorporation
+                                Date:")}}</span> {{ vendor.incorporationDate | date: "dd / MM / yyyy" }}</div>
+
+
+                        <div class="col-6 mb-2"><span style="font-size: 1em; font-weight: bolder;">{{l("Creation
+                                Date:")}}</span> {{ vendor.created | date: 'dd / MM / yyyy, h:mm a' }}</div>
+                        <div class="col-6 mb-2" *ngIf="vendor.lastModifiedBy"><span
+                                style="font-size: 1em; font-weight: bolder;">{{l("Last Modified
+                                Date:")}}</span>{{vendor.lastModified | date: 'dd / MM / yyyy, h:mm a'}}
+                        </div>
+
+
+                        <div class="col-6 mb-2"><span style="font-size: 1em; font-weight: bolder;">{{l("Tax
+                                Identification Number:")}}</span>{{vendor.taxIdentificationNumber }}</div>
+
+                        <div class="col-6 mb-2"><span style="font-size: 1em; font-weight: bolder;">{{l("Category
+                                Name:")}}</span>{{vendor.categoryName }}
+                        </div>
+                        <div class="col-6 mb-2"><span
+                                style="font-size: 1em; font-weight: bolder;">{{l("website:")}}</span>{{vendor.website }}
+                        </div>
+                        <div class="col-6 mb-2"><span
+                                style="font-size: 1em; font-weight: bolder;">{{l("Sub-Category:")}}</span>{{vendor.subCategoryNames
+                            }}
+                        </div>
+                        <div class="col-6 mb-2"><span style="font-size: 1em; font-weight: bolder;">{{l("Use Foreign
+                                Account:")}}</span>{{vendor.useForeignAccount?"Yes":"No" }}
+                        </div>
+                        <div class="col-6 mb-2"><span
+                                style="font-size: 1em; font-weight: bolder;">{{l("Fax:")}}</span>{{vendor.fax}}
+                        </div>
+                        <div class="col-6 mb-2"><span style="font-size: 1em; font-weight: bolder;">{{l("Due
+                                Diligence:")}}</span>{{vendor.dueDiligenceCompleted?"Yes":"NO"}}
+
+                        </div>
+
+
+
+
+
+                        <div class="col-6 mb-2"><span style="font-size: 1em; font-weight: bolder;">{{l("No of
+                                Documents:")}}</span>{{vendor.documents.length}}
+                        </div>
+                        <div class="col-6 mb-2"><span
+                                style="font-size: 1em; font-weight: bolder;">{{l("Country:")}}</span>{{vendor.country}}
+                        </div>
+                        <div class="col-6 mb-2"><span style="font-size: 1em; font-weight: bolder;">{{l("Public
+                                Company:")}}</span>{{vendor.isPublic?"Yes":"No"}}
+                        </div>
+                        <div class="col-6 mb-2"><span
+                                style="font-size: 1em; font-weight: bolder;">{{l("Status:")}}</span>
+                            <span *ngIf="vendor.status == 1">{{"Not Started"}}</span>
+                            <span *ngIf="vendor.status == 2">{{"Submitted"}}</span>
+                            <span *ngIf="vendor.status == 3">{{"Processing"}}</span>
+                            <span *ngIf="vendor.status == 4">{{"Enquiry"}}</span>
+                            <span *ngIf="vendor.status == 5">{{"Completed"}}</span>
+                        </div>
+
+
+
+                    </div>
+
+                    <span *ngIf="vendor?.contactPersons.length > 0">
+                        <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Contacts
+                        </h4>
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="m-widget11__label">{{"Name"}}</th>
+                                        <th class="m-widget11__label">{{"Email"}}</th>
+                                        <th class="m-widget11__label">{{"Phone"}}</th>
+                                        <th class="m-widget11__label">{{"Designation"}}</th>
+                                        <th class="m-widget11__label">{{"Is Default"}}</th>
+
+                                    </tr>
+
+
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let contact of vendor?.contactPersons">
+                                        <td>{{contact?.name}}</td>
+                                        <td>{{contact?.email}}</td>
+                                        <td>{{contact?.mobilePhoneCallCode}}{{contact?.mobilePhoneNumber}}
+                                        </td>
+                                        <td>{{contact?.designation}}</td>
+                                        <td>{{contact?.default?"Yes":"No"}}</td>
+
+
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </span>
+
+
+                    <span *ngIf="vendor.contactChannels.length > 0">
+                        <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Additional
+                            Contact Channels</h4>
+
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="m-widget11__label">{{"Type"}}</th>
+                                        <th class="m-widget11__label">{{"Email"}}</th>
+                                        <th class="m-widget11__label">{{"Phone"}}</th>
+
+
+                                    </tr>
+
+
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let moreContact of vendor?.contactChannels">
+                                        <td>{{moreContact?.type == 1?"Email":"Phone"}}</td>
+                                        <td>{{moreContact?.email}}</td>
+                                        <td>{{moreContact?.mobilePhoneCallCode}}{{moreContact?.mobilePhoneNumber}}
+                                        </td>
+
+
+
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+
+                    </span>
+
+
+
+                    <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;"> Account Details</h4>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+
+                            <div class="table-responsive">
+                                <table class="table-hover table-light">
+                                    <thead>
+                                        <tr>
+                                            <th style="white-space: nowrap; padding: 5px;">{{"Account Name"}}</th>
+                                            <th style="white-space: nowrap; padding: 5px;">{{"Account Number"}}</th>
+                                            <th style="white-space: nowrap; padding: 5px;">{{"Bank Name"}}</th>
+                                            <th style="white-space: nowrap; padding: 5px;">Currency</th>
+                                            <th style="white-space: nowrap; padding: 5px;">Int Bank Name</th>
+                                            <th style="white-space: nowrap; padding: 5px;">Int Account Number
+                                            </th>
+
+                                            <th style="white-space: nowrap; padding: 5px;">Int Swift Code</th>
+                                            <th style="white-space: nowrap; padding: 5px;">Int Sort Code</th>
+
+
+
+
+                                        </tr>
+
+
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let vendorBankProfile of vendor?.bankAccounts">
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                {{vendorBankProfile.accountName}}
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                {{vendorBankProfile.accountNumber}}</td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                {{vendorBankProfile.bankName}}
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                {{vendorBankProfile.currencyName}}
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                <span>{{vendorBankProfile.intermediaryBankName}}</span>
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                <span>{{vendorBankProfile.intermediaryAccountNumber}}</span>
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                <span>{{vendorBankProfile.intermediarySwiftCode}}</span>
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                <span>{{vendorBankProfile.intermediarySortCode}}</span>
+                                            </td>
+
+
+
+
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+                    <span *ngIf="vendor.documents.length > 0">
+                        <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Documents
+                        </h4>
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="m-widget11__label">{{"Title"}}</th>
+                                        <th class="m-widget11__label">{{"View"}}</th>
+
+
+                                    </tr>
+
+
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let document of vendor.documents">
+                                        <td>{{document?.title}}</td>
+
+                                        <td><a href="{{document?.locationUrl}}" target="_blank">
+                                                <i class="fa fa-download"></i></a></td>
+
+
+
+
+
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </span>
+
+
+
+
+
+
+                    <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Questionaire
+                        PreQualification</h4>
+                    <div class="form-group">
+                        <div class="table-scrollable ui-table-customers">
+                            <table class="table table-hover table-light">
+                                <thead>
+                                    <tr class="uppercase">
+                                        <th style="width: 500px">
+                                            {{ l("Question") }}
+                                        </th>
+                                        <th style="width: 300px">
+                                            {{ l("Response") }}
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tr *ngFor="let m of vendor?.questionnaires; let i = index">
+                                    <td style="width: 150px">
+                                        <span class="ui-column-title"></span>
+                                        {{ m.question}}
+                                    </td>
+                                    <td style="width: 150px">
+                                        <span class="ui-column-title"></span>
+                                        {{ m.response }}
+                                    </td>
+
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </span>
+            </div>
+
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)=" closeModal()">
+                    {{ l("Close") }}
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div bsModal #queryVendor="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
+    [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Query To Vendor</h4>
+                <button type="button" class="close" (click)="closeQueryModal()" [attr.aria-label]="l('Close')">
+                    <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row align-items-center">
+                    <div *ngFor="let i of queryDto.result">
+                        <div style="padding: 20" class="row">
+                            <div style="width: 45%" class="col-md-6">
+                                <div *ngIf="i.queryResponse && i.queryResponse.length > 1">
+                                    <br />
+                                    <div class="customer message__text last">
+
+                                        <div>
+                                            {{
+                                            i.queryResponse
+                                            | slice: 0:50
+                                            }}
+                                            <a href=":;"></a>
+                                            <button class="btn" type="button" popover="{{
+                                                            i.queryResponse
+                                                        }}" popoverTitle="Full Message" placement="top">
+                                                {{
+                                                "...show more!"
+                                                }}
+                                            </button>
+                                        </div>
+
+                                        <div style=" font-size: 9px; text-align: left;   font-weight: bold;">
+                                            {{
+                                            i.responseDate
+                                            | luxonFormat
+                                            : "F"
+                                            }}
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6" style="width: 45%">
+
+                                <div class="team message__text last">
+                                    <div>
+                                        {{ i.query | slice: 0:50 }}
+                                        <button class="btn" type="button" popover="{{ i.query }}"
+                                            popoverTitle="Full Message" placement="top">
+                                            {{ "...show more!" }}
+                                        </button>
+                                    </div>
+
+                                    <div style=" font-size: 9px;text-align: left; font-weight: bold; ">
+                                        {{
+                                        i.entryDate
+                                        | luxonFormat: "F"
+                                        }}
+                                    </div>
+                                    <div style=" font-size: 9px; text-align: right; font-weight: bold; ">
+                                        {{ i.queryInitiator }}
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+
+                        <label for="GroupName">{{
+                            "Enter Comment" | localize
+                            }}</label>
+                        <textarea type="text" name="ReplyComment" maxlength="500" placeholder="Enter Your Comment Here"
+                            required class="form-control" [(ngModel)]="queryMessage" value="queryMessage" placeholder="{{
+                                        'Enter Reply here.  max. xter 500'
+                                            | localize
+                                    }}" style="resize: none;"></textarea>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)=" closeQueryModal()">
+                    {{ l("Close") }}
+                </button>
+
+                <button type="submit" flex="15" [disabled]="!queryMessage" (click)=" sendQuery()"
+                    class="btn btn-primary" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                    {{ "Save" | localize }}
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div bsModal #VendorQueryResponse="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
+    [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Query Details</h4>
+                <button type="button" class="close" (click)="closeVendorQueryResponse()" [attr.aria-label]="l('Close')">
+                    <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row align-items-center">
+                    <div *ngFor="let i of queryDto.result">
+                        <div style="padding: 20" class="row">
+                            <div style="width: 45%" class="col-md-6">
+                                <div *ngIf="i.queryResponse && i.queryResponse.length > 1">
+                                    <br />
+                                    <div class="customer message__text last">
+
+                                        <div>
+                                            {{
+                                            i.queryResponse
+                                            | slice: 0:50
+                                            }}
+                                            <a href=":;"></a>
+                                            <button class="btn" type="button" popover="{{
+                                                            i.queryResponse
+                                                        }}" popoverTitle="Full Message" placement="top">
+                                                {{
+                                                "...show more!"
+                                                }}
+                                            </button>
+                                        </div>
+
+                                        <div style=" font-size: 9px; text-align: left;   font-weight: bold;">
+                                            {{
+                                            i.responseDate
+                                            | luxonFormat
+                                            : "F"
+                                            }}
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6" style="width: 45%">
+
+                                <div class="team message__text last">
+                                    <div>
+                                        {{ i.query | slice: 0:50 }}
+                                        <button class="btn" type="button" popover="{{ i.query }}"
+                                            popoverTitle="Full Message" placement="top">
+                                            {{ "...show more!" }}
+                                        </button>
+                                    </div>
+
+                                    <div style=" font-size: 9px;text-align: left; font-weight: bold; ">
+                                        {{
+                                        i.entryDate
+                                        | luxonFormat: "F"
+                                        }}
+                                    </div>
+                                    <div style=" font-size: 9px; text-align: right; font-weight: bold; ">
+                                        {{ i.queryInitiator }}
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)="closeVendorQueryResponse()">
+                    {{ l("Close") }}
+                </button>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div bsModal #uploadDocumentModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
+    [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4>Documents </h4>
+                <button type="button" class="close" (click)="closeDocumentModal()" [attr.aria-label]="l('Close')">
+                    <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row align-items-center">
+
+                    <div class="table-responsive">
+
+                        <table class="table">
+                            <thead>
+                                <th style="width: 100px">Title</th>
+                                <th style="width: 100px">Download Document</th>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let documentRecord of documents; let index = index">
+                                    <td style="width: 100px;">{{documentRecord.title}}</td>
+                                    <td style="width: 100px;"><a href="{{documentRecord.locationUrl}}" target="_blank">
+                                            <i class="fa fa-download"></i></a></td>
+
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)="closeDocumentModal()">
+                    {{ l("Close") }}
+                </button>
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<onboarding-vendor-query #queryVendorComp (modalSave)="getVendorsOnboardingData()"></onboarding-vendor-query>

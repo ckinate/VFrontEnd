@@ -1,0 +1,151 @@
+<div [@routerTransition]>
+
+    <div class="content d-flex flex-column flex-column-fluid">
+        <sub-header [title]="'Enquiry History' | localize">
+        </sub-header>
+        <div [class]="containerClass">
+            <div class="card card-custom ">
+                <div class="card-body">
+                    <div >
+                    <div class="row align-items-center">
+                            <div class="col-md-12" >
+                                <br>
+
+                                <div class="row align-items-center">
+                                    <div
+                                        class="primeng-datatable-container"
+                                        [busyIf]="primengTableHelper.isLoading"
+                                    >
+                                        <p-table
+                                            #dataTable
+                                            [value]="vendorQueryHistory"
+                                            rows="{{
+                                                primengTableHelper.defaultRecordsCountPerPage
+                                            }}"
+                                            [paginator]="true"
+                                            [rows]="10"
+                                            [rowsPerPageOptions]="[5, 10, 15, 20]"
+                                            [lazy]="false"
+                                            [rowHover]="true"
+                                            sortMode="multiple"
+                                            [scrollable]="true"
+                                            ScrollWidth="100%"
+                                            [responsive]="primengTableHelper.isResponsive"
+                                            [resizableColumns]="
+                                                primengTableHelper.resizableColumns
+                                            "
+                                            [globalFilterFields]="[
+                                                'companyName',
+                                                'vendorNumber'
+
+                                            ]"
+                                        >
+                                            <ng-template pTemplate="caption">
+                                                <div style="text-align: right">
+                                                    <i
+                                                        class="pi pi-search"
+                                                        style="margin: 4px 4px 0 0"
+                                                    ></i>
+                                                    <input
+                                                        type="text"
+                                                        pInputText
+                                                        size="30"
+                                                        placeholder="Search Keyword"
+                                                        style="width: auto"
+                                                        (input)="
+                                                            dataTable.filterGlobal(
+                                                                $event.target.value,
+                                                                'contains'
+                                                            )
+                                                        "
+                                                    />
+                                                </div>
+                                            </ng-template>
+
+                                            <ng-template pTemplate="header">
+                                                <tr>
+                                                    <th style="width: 100px"  >
+
+                                                      {{'Vendor Number' | localize}}
+                                                  </th>
+                                                  <th  style="width: 200px" >
+
+                                                   {{'Company Name ' | localize}}
+                                               </th>
+
+                                               <th  style="width: 100px" >
+                                                   {{'Enquiry History' | localize}}
+                                               </th>
+
+
+                                                        <th style="width: 100px"  >
+                                                           {{'Attachment' | localize}}
+                                                       </th>
+
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template
+                                                pTemplate="body"
+                                                let-record="$implicit"
+                                            >
+                                                <tr>
+
+                                                    <td style="width: 100px">
+                                                        <span
+                                                            class="ui-column-title"
+                                                        ></span>
+                                                        {{ record.vendorNumber }}
+                                                    </td>
+                                                    <td style="width: 200px">
+                                                        <span
+                                                            class="ui-column-title"
+                                                        ></span>
+                                                        {{ record.companyName}}
+                                                    </td>
+                                                    <td style="width: 100px">
+                                                        <span
+                                                            class="ui-column-title"
+                                                        ></span>
+                                                        <a
+                                                        href="javascript:;"
+                                                        (click)="vendorEnquiry(record)"
+                                                        title="Click to see Enquiry History"
+                                                        ><i class="fas fa-comments"></i></a>
+
+                                                    </td>
+
+
+
+                                                    <td  style="width: 100px">
+                                                        <a href="javascript:;" title="View/Upload supporting documents"  (click)="showDocument(record.refNo,record.operationId)"  >
+                                                            <i class="fa fa-download"></i>
+                                                        </a>
+                                                        <span class="badge badge-light">{{record.documentCount}}</span>
+                                                    </td>
+
+
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+
+
+                                    </div>
+                                </div>
+
+                </div>
+
+                </div>
+
+                </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+<appfileupload #fileUpload></appfileupload>
+<enquiry-history #enquirryHistorymodal></enquiry-history>
+</div>
+

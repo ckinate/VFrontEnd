@@ -1,0 +1,319 @@
+﻿<div bsModal #editVendorModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="viewVendorModal2" aria-hidden="true" [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #vendorForm="ngForm" novalidate autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>{{l("Vendor Details")}}</span>
+                    </h4>
+                    <button (click)="generatePDF()" style="text-align: center;" class="btn btn-primary"
+                        [buttonBusy]="processPdf" [busyText]="l('SavingWithThreeDot')" [disabled]="processPdf">Generate
+                        PDF</button>
+                    <button type="button" class="btn btn-default" (click)="close()">
+                        {{ l("Close") }}
+                    </button>
+                </div>
+
+                <div class="modal-body" id="pEl">
+                    <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Vendor Data</h4>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+
+                            <div class="col-6 mb-3">
+                                <h6>{{l("CompanyName")}}</h6>
+                                {{ vendor.companyName }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Address")}}</h6>
+                                {{vendor.address }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("RCNumber")}}</h6>
+                                {{vendor.rcNumber }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("OfficePhone")}}</h6>
+                                {{ vendor.officePhone }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Mobile")}}</h6>
+                                {{ vendor.mobile }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Email")}}</h6>
+                                {{ vendor.email }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Company Reg Date")}}</h6>
+                                {{ vendor.dateRegistered | date: "dd / MM / yyyy" }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("TaxIdentificationNumber")}}</h6>
+                                {{vendor.taxIdentificationNumber }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Category Name")}}</h6>
+                                {{vendor.categoryName }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Modified By")}}</h6>
+                                {{vendor.modifyBy }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Modified Date")}}</h6>
+                                {{vendor.modifiedDate | date : "dd / MM / yyyy hh:mm:ss" }}
+                            </div>
+
+                        </div>
+                        <div class="form-group col-md-6">
+                            <!-- <div class="col-6 mb-3">
+                                    <h6>{{l("Category")}}</h6>
+                                    {{ vendor.categoryName }}
+                                </div> -->
+                            <div class="col-6 mb-3">
+                                <h6>{{l("ContactPerson")}}</h6>
+                                {{ vendor.contactPerson }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("ContactDesignation")}} </h6>
+                                {{ vendor.contactDesignation }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("ContactPhone")}}</h6>
+                                {{ vendor.contactPhone }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("ContactEmail")}} </h6>
+                                {{ vendor.contactEmail }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Fax")}}</h6>
+                                {{ vendor.fax }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("website")}}</h6>
+                                {{ vendor.website }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("CompanyType")}}</h6>
+                                {{ vendor.companyType }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Sub-Category")}}</h6>
+                                {{ vendor.subCategoryName }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("No of Attachment")}}</h6>
+                                <span class="badge badge-light">{{supportingDocumentCount}}</span>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Use Foreign Account")}}</h6>
+                                {{vendor.useforeignAccount }}
+                            </div>
+                            <div class="col-6 mb-3">
+                                <h6>{{l("Creation Date")}}</h6>
+                                {{vendor.creationDate | date : "dd / MM / yyyy hh:mm:ss"}}
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;"> Account Details</h4>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <h6>{{"Account Name"}}</h6>
+                            {{userBankProfile.beneficiaryName}}
+                        </div>
+                        <div class="form-group col-md-4">
+                            <h6>{{"Account Number"}}</h6>
+                            {{userBankProfile.beneficiaryAccountNumber}}
+                        </div>
+                        <div class="form-group col-md-4">
+                            <h6>{{"Bank Name"}}</h6>
+                            {{userBankProfile.bankName}}
+                        </div>
+                        <div class="form-group col-md-4">
+                            <h6>{{"Currency Name"}}</h6>
+                            {{userBankProfile.beneficiaryCurrencyName}}
+                        </div>
+
+                    </div>
+                    <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Questionaire
+                        PreQualification</h4>
+                    <div class="form-group">
+                        <div class="table-scrollable ui-table-customers">
+                            <table class="table table-hover table-light">
+                                <thead>
+                                    <tr class="uppercase">
+                                        <th style="width: 500px">
+                                            {{ l("Question") }}
+                                        </th>
+                                        <th style="width: 300px">
+                                            {{ l("Response") }}
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tr *ngFor="let m of Questionarelist; let i = index">
+                                    <td style="width: 150px">
+                                        <span class="ui-column-title"></span>
+                                        {{ m.question }}
+                                    </td>
+                                    <td style="width: 150px">
+                                        <span class="ui-column-title"></span>
+                                        {{ m.response }}
+                                    </td>
+                                    <!-- <td style="width: 150px">
+                                                <input type="textarea" class="form-control" id="response"
+                                                    name="m.{{ i }}.answer" [(ngModel)]="m.response" placeholder="{{
+                                                        'Response' | localize
+                                                    }}" />
+                                            </td>
+                                            <td></td> -->
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;"> Additional COntact
+                        Person Details</h4>
+                    <div class="form-group ">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="col-sm-12 table-hover table-light">
+                                    <thead>
+                                        <tr>
+                                            <th>Contact Person</th>
+                                            <th>Contact Phone</th>
+                                            <th>Contact Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let items of vendorContactDetailsList; let i = index;">
+
+                                            <td>
+                                                <span>{{items.contactName}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{items.phone}}</span>
+                                            </td>
+                                            <td>
+                                                <span>{{items.email}}</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;"> Additional Phone
+                        Number And Email</h4>
+                    <div class="form-group">
+                        <div class="row">
+
+                            <div class="col-sm-12">
+                                <table class="col-sm-12 table-hover table-light">
+                                    <thead>
+                                        <tr>
+
+                                            <th>Email</th>
+                                            <th>Phone Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor=" let items of vendorEmailAndPhoneNumberList; let i = index">
+
+                                            <td>{{ items.email }}</td>
+                                            <td>
+                                                <span>{{items.phoneNumber}}</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Foreign Account
+                        Details</h4>
+                    <div class="form-group ">
+                        <div class="row">
+
+                            <div class="col-sm-12">
+                                <div class="table-responsive">
+
+                                    <table class="table-hover table-light">
+                                        <thead>
+                                            <tr>
+
+                                                <th style="white-space: nowrap; padding: 5px;">Bank</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Account Number</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Account Name</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Bank Code</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Country</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Int Bank Name</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Int Account Number
+                                                </th>
+                                                <th style="white-space: nowrap; padding: 5px;">Int Swift Code</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Int Sort Code</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Int Address</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor=" let items of vendorForeignAccountDtoList; let i = index ">
+
+                                                <td style="white-space: nowrap; padding: 2px;">
+                                                    <span>{{items.foreignBank}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 2px;">
+                                                    <span>{{items.foreignAccountNumber}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 2px;">
+                                                    <span>{{items.foreignAccountName}}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{items.foreignBankCode}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 2px;">
+                                                    <span>{{items.foreignCountry}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 2px;">
+                                                    <span>{{items.intermediaryBankName}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 2px;">
+                                                    <span>{{items.intermediaryAccountNumber}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 2px;">
+                                                    <span>{{items.intermediarySwiftCode}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 2px;">
+                                                    <span>{{items.intermediarySortCode}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 2px;">
+                                                    <span>{{items.intermediaryAddress}}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+            </form>
+        </div>
+    </div>
+</div>
+<!-- <appdocuments #appdocuments></appdocuments> -->
+<appfileupload #fileUpload></appfileupload>

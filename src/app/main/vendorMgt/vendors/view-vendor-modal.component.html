@@ -1,0 +1,193 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>{{l("Details")}}</span>
+                </h4>
+                <button type="button" class="close" (click)="close()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+             
+            <div class="row">
+                <div class="form-group col-md-6">
+              
+                        <div class="col-6 mb-3">
+                            <h6>{{l("CompanyName")}} :</h6>
+                            {{ item.vendor.companyName }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("Address")}} :</h6>
+                            {{ item.vendor.address }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("OfficePhone")}} :</h6>
+                            {{ item.vendor.officePhone }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("Mobile")}} :</h6>
+                            {{ item.vendor.mobile }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("Email")}} :</h6>
+                            {{ item.vendor.email }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("DateRegistered")}} :</h6>
+                            <!--{{ item.vendor.dateRegistered |  momentFormat:'YYYY-MM-DD HH:mm:ss'  }}-->
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("TaxIdentificationNumber")}} :</h6>
+                            {{ item.vendor.taxIdentificationNumber }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("ContactPerson")}} :</h6>
+                            {{ item.vendor.contactPerson }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("ContactDesignation")}} :</h6>
+                            {{ item.vendor.contactDesignation }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("ContactPhone")}} :</h6>
+                            {{ item.vendor.contactPhone }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("ContactEmail")}} :</h6>
+                            {{ item.vendor.contactEmail }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("Fax")}} :</h6>
+                            {{ item.vendor.fax }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("website")}} :</h6>
+                            {{ item.vendor.website }}
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>{{l("CompanyType")}} :</h6>
+                            {{ item.vendor.companyType }}
+                        </div>
+                        <!-- <div class="col-6 mb-3">
+                            <h6>{{l("BankName")}} :</h6>
+                            {{ item.bankDetail.bankName }}
+                        </div> -->
+    
+            
+                </div>
+                <div class="form-group col-md-6">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+
+                </div>
+                <div class="form-group col-md-6">
+
+                </div>
+            </div>
+            </div>
+
+        
+                <!-- <div class="row">
+                    <div class="col-md-12">
+                        <br />
+                        <button (click)="AddMoreForeignDetails()" class="btn btn-xs btn-primary"
+                            style="padding: 1px; margin-left: 12px">
+                            + Add Foreign Bank Detail
+                        </button>
+                        <br /><br />
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="bankName">{{
+                                "Select Bank Name" | localize
+                                }}
+                                *</label>
+                            <select name="bankNames" id="bankNames" [(ngModel)]="
+                                    userBankProfile.bankCode
+                                " ngModel class="form-control">
+                                <option value="0" selected="selected">
+                                    Select Bank Name
+                                </option>
+                                <option *ngFor="let x of Banks" [ngValue]="x.bankCode">
+                                    {{ x.bankName }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="accNo">{{
+                                "Account Number" | localize
+                                }}
+                                *</label>
+                            <input id="accNo" type="text" name="accNo" class="form-control" [(ngModel)]="
+                                    userBankProfile.beneficiaryAccountNumber
+                                " (keypress)="keyPressNumeric($event)" (paste)="keyPressNumeric($event)"
+                                required min="10" maxlength="10" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="accName">{{
+                                "Account Name" | localize
+                                }}
+                                *</label>
+                            <input id="accName" #accnameInput="ngModel" class="form-control" type="text"
+                                name="accName" [(ngModel)]="
+                                    userBankProfile.beneficiaryName
+                                " required maxlength="64" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="bankCode">{{
+                                " Sort Code" | localize
+                                }}
+                                *</label>
+                            <input id="bankCode" #bankCodeInput="ngModel" class="form-control" type="text"
+                                disabled name="bankCode" [(ngModel)]="
+                                    userBankProfile.bankCode
+                                " required />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="BankAddress">{{
+                                "Bank Address" | localize
+                                }}</label>
+                            <input id="BankAddress" class="form-control" type="text" name="BankAddress"
+                                [(ngModel)]="vendor.bankAddress" />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="VatRegNumber">{{
+                                " VAT Reg Number" | localize
+                                }}</label>
+                            <input id="VatRegNumber" class="form-control" type="text"
+                                (keypress)="keyPressNumeric($event)" min="1" maxlength="15"
+                                name="VatRegNumber" (paste)="keyPressNumeric($event)"
+                                [(ngModel)]="vendor.vatRegNumber" />
+                        </div>
+                    </div>
+                </div> -->
+          
+            <div class="modal-footer">
+                <button [disabled]="saving" type="button" class="btn btn-primary blue"
+                    (click)="close()">{{l("Close")}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

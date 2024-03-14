@@ -1,0 +1,80 @@
+<div [@routerTransition]>
+    <div class="row row-no-padding row-col-separator-x2 bg-white h-100" [perfectScrollbar]>
+        <div class="col pr-2">
+            <div class="card card-custom bgi-no-repeat card-stretch new-subscription-statistics h-100">
+                <div class="card-body justify-content-center rounded shadow-sm-sm" style="background-color: #396B0A66;">
+                    <a>
+                        <a href="javascript:;"
+                            class="mt-3 text-center font-weight-bolder text-dark font-size-h6 text-hover-state-dark d-block">
+                            Total Vendor
+                        </a>
+                        <div class="text-center mt-5 font-weight-bolder font-size-h2 mr-2">
+                            <span counto [step]="30" [duration]="1" [countFrom]="0"
+                                [countTo]="dashboardTopStats.totalVendor" style="color: black;"
+                                (countoChange)="dashboardTopStats.totaltotalVendorCounter = $event">
+                                {{dashboardTopStats.totaltotalVendorCounter.toFixed(0)}}
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col pr-2">
+            <a>
+                <div class="card card-custom bgi-no-repeat card-stretch new-subscription-statistics h-100">
+                    <div class="card-body justify-content-center rounded shadow-sm"
+                        style="background-color: #D1870066;">
+                        <a href="javascript:;"
+                            class="mt-3 text-center font-weight-bolder text-dark font-size-h6 text-hover-state-dark d-block">
+                            Active Vendors
+                        </a>
+                        <div class="text-center mt-5 font-weight-bolder font-size-h2 mr-2">
+                            <span counto [step]="30" [duration]="1" [countFrom]="0"
+                                [countTo]="dashboardTopStats.totalActiveVendor" style="color: black;"
+                                (countoChange)="dashboardTopStats.totalActiveVendorCounter = $event">
+                                {{dashboardTopStats.totalActiveVendorCounter.toFixed(0)}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col pr-2">
+            <a>
+                <div class="card-body justify-content-center rounded shadow-sm" style="background-color: #D9241566;">
+                    <a href="javascript:;"
+                        class="mt-3 text-center font-weight-bolder text-dark font-size-h6 text-hover-state-dark d-block">
+                        Approval Request
+                    </a>
+                    <div class="text-center mt-5 font-weight-bolder font-size-h2 mr-2">
+                        <span counto [step]="30" [duration]="1" style="color: black;" [countFrom]="0"
+                            [countTo]="dashboardTopStats.totalApprovalRequest"
+                            (countoChange)="dashboardTopStats.totalApprovalRequestCounter = $event">
+                            {{dashboardTopStats.totalApprovalRequestCounter.toFixed(0)}}
+                        </span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col pr-0">
+            <a>
+                <div class="card-body justify-content-center rounded shadow-sm" style="background-color:#ff9933;">
+                    <a href="javascript:;"
+                        class="mt-3 text-center font-weight-bolder text-dark font-size-h6 text-hover-state-dark d-block">
+                        Inactive Vendors
+                    </a>
+                    <div class="text-center mt-5 font-weight-bolder font-size-h2 mr-2">
+                        <span counto [step]="30" [duration]="1" style="color: black;" [countFrom]="0"
+                            [countTo]="dashboardTopStats.totalInactiveVendor"
+                            (countoChange)="dashboardTopStats.totalInactiveVendorCounter = $event">
+                            {{dashboardTopStats.totalInactiveVendorCounter.toFixed(0)}}
+                        </span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>

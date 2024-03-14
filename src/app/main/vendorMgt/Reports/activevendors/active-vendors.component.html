@@ -1,0 +1,177 @@
+<div [@routerTransition]>
+    <div class="content d-flex flex-column flex-column-fluid">
+        <sub-header [title]="'Vendor Report' | localize"></sub-header>
+        <div [class]="containerClass">
+            <tabset id="tablet" class="card-header-vic" style="box-shadow: 0 0 5px #ccc">
+
+                <tab heading="{{'Vendor List ' | localize}}">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="VendorStatus">{{"Report Type" | localize}}</label>
+                                        <select id="VendorStatus" name="VendorStatus" class="form-control"
+                                            placeholder="Select Status " [(ngModel)]="vendorStatus">
+                                            <option value="0">{{"All Vendors" | localize}}</option>
+                                            <option value="1">{{"Active Vendors" | localize}}</option>
+                                            <option value="2">
+                                                {{
+                                                "Unauthorized Vendors" | localize
+                                                }}
+                                            </option>
+                                            <option value="3">
+                                                {{
+                                                "Declined Vendors" | localize
+                                                }}
+                                            </option>
+                                            <option value="6">{{"Inactive Vendors" | localize}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="vendorText">{{"Company Name"| localize}}</label>
+                                        <input type="text" class="form-control" name="SearchText"
+                                            [(ngModel)]="searchText" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="category">Vendor Category</label>
+                                        <ng-select name="VendorCategory" id="category" [(ngModel)]="vendorCategoryId"
+                                            (ngModelChange)="getVenSubCategory($event)">
+                                            <ng-option *ngFor="let item of VenCategory" [value]="item.id">{{
+                                                item.categoryName }}</ng-option>
+                                        </ng-select>
+
+                                        <!-- <select class="form-control" name = "VendorCategory" id="category" [(ngModel)]="vendorCategoryId" (ngModelChange) = "getVenSubCategory($event)" >
+                                        <option  selected [ngValue]=null>....clear</option>
+                                        <option *ngFor="let item of VenCategory" [value]="item.id">  {{ item.categoryName }}</option>
+
+                                     </select> -->
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="category">Sub Category</label>
+                                        <ng-select name="VendorCategory" id="category" [(ngModel)]="subcategoryId">
+                                            <ng-option *ngFor="let item of SubCategory" [value]="item.id">{{
+                                                item.narration }}</ng-option>
+                                        </ng-select>
+                                        <!--
+                                      <select class="form-control" name = "VendorCategory" id="category" [(ngModel)]="subcategoryId"  >
+                                        <option   [ngValue]="null">....clear</option>
+                                         <option  *ngFor="let item of SubCategory" [value]="item.id">    {{ item.narration }}</option>
+
+                                      </select> -->
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="button"
+                                            (click)="ViewReportList(myURL)">View Report</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <iframe width="100%" height="600" [src]="UrlLink | finsafe">
+                </iframe> -->
+                        </div>
+                    </div>
+                </tab>
+                <tab heading="{{ 'Statistical DashBoard Report' | localize }}">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+
+                                        <label for="VendorStatus">{{
+                                            "Report Type" | localize
+                                            }}</label>
+                                        <select id="VendorStatus" name="VendorStatus" class="form-control"
+                                            placeholder="Select Status " [(ngModel)]="vendorStatus">
+                                            <option value="0">
+                                                {{ "All Vendors" | localize }}
+                                            </option>
+                                            <option value="1">
+                                                {{
+                                                "Active Vendors" | localize
+                                                }}
+                                            </option>
+                                            <option value="2">
+                                                {{
+                                                "Unauthorized Vendors" | localize
+                                                }}
+                                            </option>
+                                            <option value="3">
+                                                {{
+                                                "Declined Vendors" | localize
+                                                }}
+                                            </option>
+                                            <option value="6">
+                                                {{
+                                                "Inactive Vendors"
+                                                | localize
+                                                }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="vendorText">{{"Company Name"| localize}}</label>
+                                        <input type="text" class="form-control" name="SearchText"
+                                            [(ngModel)]="searchText" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="category">Vendor Category</label>
+
+                                        <ng-select name="VendorCategory" id="category" [(ngModel)]="vendorCategoryId"
+                                            (ngModelChange)="getVenSubCategory($event)">
+                                            <ng-option *ngFor="let item of VenCategory" [value]="item.id">{{
+                                                item.categoryName }}</ng-option>
+                                        </ng-select>
+
+                                        <!-- <select class="form-control" name = "VendorCategory" id="category" [(ngModel)]="vendorCategoryId" (ngModelChange) = "getVenSubCategory($event)" >
+                                        <option  selected [ngValue]=null>....clear</option>
+                                         <option *ngFor="let item of VenCategory" [value]="item.id">  {{ item.categoryName }}</option>
+
+                                      </select> -->
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+
+                                        <label for="category">Sub Category</label>
+                                        <ng-select name="VendorCategory" id="category" [(ngModel)]="subcategoryId">
+                                            <ng-option *ngFor="let item of SubCategory" [value]="item.id">{{
+                                                item.narration }}</ng-option>
+                                        </ng-select>
+
+                                        <!-- <select class="form-control" name = "VendorCategory" id="category" [(ngModel)]="subcategoryId"  >
+                                        <option  selected [ngValue]=null>....clear</option>
+                                          <option  *ngFor="let item of SubCategory" [value]="item.id">    {{ item.narration }}</option>
+
+                                       </select> -->
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="button" (click)="ViewReport(myURL)">
+                                            View Report
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <iframe width="100%" height="600" [src]="link | finsafe">
+                </iframe> -->
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

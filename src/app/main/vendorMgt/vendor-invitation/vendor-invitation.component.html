@@ -1,0 +1,355 @@
+<div [@routerTransition]>
+    <div class="content d-flex flex-column flex-column-fluid">
+        <sub-header [title]="'Vendors Invitation' | localize">
+            <div role="actions"><button class="btn btn-primary" (click)=" openSendInvitationModal()">Send
+                    Invitation</button></div>
+        </sub-header>
+        <div [class]="containerClass">
+            <div class="card card-custom">
+
+                <div class="card-body" [busyIf]="primengTableHelper.isLoading">
+                    <div class="row" style="width: 1200px; ">
+                        <div class="col-12 my-5">
+
+
+                            <form class="col-16 " autocomplete="off" #ProductUpload="ngForm" (ngSubmit)="searchInit()">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div
+                                            style="flex-direction: row; display: flex;border-width: 1px;border-color: black;border-radius: 20px;border-style: solid;">
+                                            <i class="strip-button fa fa-search"
+                                                style="margin-top: 10px;margin-left: 10px;"></i>
+                                            <input id="description" name="description" style="border: 0ch;width: 80%;"
+                                                type="search" multiple="true" (input)="onChange()"
+                                                [(ngModel)]="searchWord" class="form-control rounded"
+                                                placeholder="Search">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-2" style="top: -20px; position: relative;">
+                                        <label for="filterTypes"> {{ l("Status:") }}</label>
+                                        <ng-select placeholder="Select" name="status" id="status"
+                                            [(ngModel)]="statusName" (ngModelChange)="changeStatue(statusName)">
+                                            <ng-option value=0> All</ng-option>
+                                            <ng-option value=2> Invitation Accepted</ng-option>
+                                            <ng-option value=3>Pending Acceptance</ng-option>
+                                        </ng-select>
+                                    </div>
+
+
+                                    <div class="col-3 ml-2" style="top: -16px; position: relative;">
+                                        <div>
+                                            Date Range:
+                                        </div>
+                                        <input class="form-control" id="StartEndRange" name="StartEndRange"
+                                            #drp="bsDaterangepicker" readonly="readonly" bsDaterangepicker
+                                            dateRangePickerLuxonModifier [(date)]="dateRange" />
+
+                                    </div>
+
+
+                                    <div class="col-1">
+                                        <button type="submit" (click)="searchInit()" class="btn btn-primary">
+                                            {{ l("Search") }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="card card-custom mt-0">
+
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+
+                                <div class="primeng-datatable-container">
+                                    <p-table #dataTable [value]="vendorsInvitationData.result" [rows]="10"
+                                        [rowsPerPageOptions]="[5, 10, 15, 20]" rows="{{
+                                            primengTableHelper.defaultRecordsCountPerPage
+                                        }}" [lazy]="false" scrollable="true" [paginator]="true" ScrollWidth="100%"
+                                        responsive="primengTableHelper.isResponsive"
+                                        resizableColumns="primengTableHelper.resizableColumns" dataKey="id"
+                                        [filterDelay]="0" [rowHover]="true" styleClass="ui-table-customers"
+                                        sortMode="multiple">
+
+
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th style="width: 100px">
+                                                    {{ l("Actions") }}
+                                                </th>
+                                                <th style="width: 250px" pSortableColumn="companyName">
+                                                    {{ l("Company Name") }}
+                                                    <p-sortIcon field="companyName"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 200px" pSortableColumn="adminName">
+                                                    {{ l("Vendor Admin Name") }}
+                                                    <p-sortIcon field="adminName"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 250px" pSortableColumn="adminEmail">
+                                                    {{ l("Vendor Admin Email") }}
+                                                    <p-sortIcon field="adminEmail"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 150px" pSortableColumn="entryDate">
+                                                    {{ l("Created Date") }}
+                                                    <p-sortIcon field="entryDate"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 100px" pSortableColumn="used">
+                                                    {{ l("Status") }}
+                                                    <p-sortIcon field="used"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 200px" pSortableColumn="usedDate">
+                                                    {{ l("Acceptance Date") }}
+                                                    <p-sortIcon field="usedDate"></p-sortIcon>
+                                                </th>
+
+
+
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-record="$implicit">
+                                            <tr>
+                                                <td style="width: 100px">
+                                                    <buton type="button" class="btn btn-sm btn-primary"
+                                                        (click)=" resendInvitation(record)"
+                                                        *ngIf="record.used == false">Resend</buton>
+                                                </td>
+
+                                                <td style="width: 250px">
+                                                    {{ record.companyName }}
+                                                </td>
+                                                <td style="width: 200px">
+                                                    {{ record.adminName }}
+                                                </td>
+                                                <td style="width: 250px">
+                                                    {{ record.adminEmail}}
+                                                </td>
+                                                <td style="width: 150px">
+                                                    {{ record.entryDate|date }}
+                                                </td>
+
+                                                <td style="width: 100px">
+                                                    <span *ngIf="record.used ==false">Pending Acceptance</span>
+                                                    <span *ngIf="record.used">Invitation Accepted</span>
+                                                    <!-- {{ record.used }} -->
+                                                </td>
+                                                <td style="width: 200px">
+                                                    {{ record.usedDate|date}}
+                                                </td>
+
+
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+
+
+
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div bsModal #sendVendorInvitation="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
+    [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+            <form autocomplete="off" novalidate #sendInvitationForm="ngForm"
+                (ngSubmit)="sendInvitation(sendInvitationForm)">
+                <div class="modal-header">
+                    <h4>Send Invitation</h4>
+                    <button type="button" class="close" (click)="closeSendInviteModal()" [attr.aria-label]="l('Close')">
+                        <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class=" col-12 form-group">
+
+                            <label for="companyName">{{
+                                "Company Name" | localize
+                                }}</label>
+
+                            <input type="text" class="form-control" id="companyName" name="CompanyName" required
+                                [(ngModel)]="createInvitationDto.companyName" #sendCompName="ngModel"
+                                pattern="[a-zA-Z\ ]*" />
+
+                            <div *ngIf="sendCompName.touched">
+                                <p *ngIf="sendCompName.errors?.pattern" style="color: red;">Enter a valid name without
+                                    special Character and number
+                                </p>
+                                <p *ngIf="sendCompName.errors?.required" style="color: red;">This is required
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class=" col-6 form-group">
+
+                            <label for="adminName">{{
+                                "Vendor Admin Name" | localize
+                                }}</label>
+
+                            <input type="text" class="form-control" id="adminName" name="AdminName" required
+                                [(ngModel)]="createInvitationDto.adminName" #sendAdminName="ngModel" />
+                            <div *ngIf="sendAdminName.touched">
+                                <!-- <p *ngIf="sendAdminName.errors?.pattern" style="color: red;">Enter a valid name without
+                                    special Character and number
+                                </p> -->
+                                <p *ngIf="sendAdminName.errors?.required" style="color: red;">This is required
+                                </p>
+                            </div>
+
+                        </div>
+                        <div class=" col-6 form-group">
+
+                            <label for="adminEmail">{{
+                                "Vendor Admin Email" | localize
+                                }}</label>
+
+                            <input type="email" class="form-control" id="adminEmail" name="AdminEmail" required
+                                [(ngModel)]="createInvitationDto.adminEmail" #sendEmailId="ngModel"
+                                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" />
+                            <div *ngIf="sendEmailId.touched">
+                                <p *ngIf="sendEmailId.errors?.pattern" style="color: red;">This is not a valid Email!!!
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" (click)=" closeSendInviteModal()">
+                        {{ l("Close") }}
+                    </button>
+
+                    <button type="submit" flex="15" [disabled]="!sendInvitationForm.form.valid" class="btn btn-primary"
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                        {{ "Save" | localize }}
+                    </button>
+                </div>
+
+            </form>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div bsModal #reSendVendorInvitation="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
+    [config]="{ backdrop: 'static' }">
+
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+            <form autocomplete="off" novalidate #editsendInvitationForm="ngForm" (ngSubmit)="saveEditInvitation()">
+                <div class="modal-header">
+                    <h4>Edit Invitation</h4>
+                    <button type="button" class="close" (click)="closeReSendInviteModal()"
+                        [attr.aria-label]="l('Close')">
+                        <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class=" col-12 form-group">
+
+                            <label for="companyName">{{
+                                "Company Name" | localize
+                                }}</label>
+
+                            <input type="text" class="form-control" id="companyName" name="CompanyName" required
+                                [(ngModel)]="editInvitationDto.companyName" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class=" col-6 form-group">
+
+                            <label for="adminName">{{
+                                "Admin Name" | localize
+                                }}</label>
+
+                            <input type="text" class="form-control" id="adminName" name="AdminName" required
+                                [(ngModel)]="editInvitationDto.adminName" />
+
+                        </div>
+                        <div class=" col-6 form-group">
+
+                            <label for="adminEmail">{{
+                                "Admin Email" | localize
+                                }}</label>
+
+                            <input type="email" class="form-control" id="adminEmail" name="AdminEmail" required
+                                [(ngModel)]="editInvitationDto.adminEmail" />
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" (click)="closeReSendInviteModal()">
+                        {{ l("Close") }}
+                    </button>
+
+                    <button type="submit" flex="15" [disabled]="!editsendInvitationForm.form.valid"
+                        class="btn btn-primary" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                        {{ "Save" | localize }}
+                    </button>
+                </div>
+
+            </form>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+</div>

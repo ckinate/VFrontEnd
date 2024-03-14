@@ -1,0 +1,119 @@
+﻿<div
+    bsModal
+    #createOrEditModal="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="createOrEditModal"
+    aria-hidden="true"
+    [config]="{ backdrop: 'static' }"
+>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form
+                *ngIf="active"
+                #documentUploadForm="ngForm"
+                novalidate
+                (ngSubmit)="save()"
+                autocomplete="off"
+            >
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="documentUpload.id">{{
+                            l("Edit Document Upload")
+                        }}</span>
+                        <span *ngIf="!documentUpload.id">{{
+                            l("Create New Document Upload")
+                        }}</span>
+                    </h4>
+                    <button
+                        type="button"
+                        class="close"
+                        (click)="close()"
+                        aria-label="Close"
+                        [disabled]="saving"
+                    >
+                        <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="DocumentUpload_DocumentTitle">{{
+                            l("DocumentTitle")
+                        }}</label>
+                        <input
+                            type="text"
+                            #DocumentUpload_DocumentTitle="ngModel"
+                            id="DocumentUpload_DocumentTitle"
+                            class="form-control"
+                            [(ngModel)]="documentUpload.documentTitle"
+                            name="DocumentTitle"
+                            pattern="[a-zA-Z0-9 ]*"
+                        />
+                        <validation-messages
+                            [formCtrl]="DocumentUpload_DocumentTitle"
+                        ></validation-messages>
+                    </div>
+
+                    <!-- <div class="form-group">
+									<label for="DocumentUpload_ReminderDate">{{l("ReminderDate")}}</label>
+									<input type="text" #DocumentUpload_ReminderDate="ngModel" id="DocumentUpload_ReminderDate" class="form-control" [(ngModel)]="documentUpload.reminderDate" name="ReminderDate"    />
+								    <validation-messages [formCtrl]="DocumentUpload_ReminderDate"></validation-messages>
+								</div> -->
+                    <!-- <div class="form-group">
+									<label for="DocumentUpload_ReminderDate">{{l("Date Registered")}}</label>
+									<input required class="form-control m-input" #DocumentUpload_ReminderDate type="datetime"
+										bsDatepicker datePickerMomentModifier [(date)]="documentUpload.reminderDate"
+										id="DocumentUpload_ReminderDate" name="reminderDate">
+									<validation-messages [formCtrl]="DocumentUpload_ReminderDate"></validation-messages>
+								</div> -->
+                    <!-- <br/><div class="m-checkbox-list">
+									<label for="DocumentUpload_IsCompulsory" class="kt-checkbox">
+										<input id="DocumentUpload_IsCompulsory" #DocumentUpload_IsCompulsory="ngModel" type="checkbox" name="IsCompulsory" [(ngModel)]="documentUpload.isCompulsory"> 
+										{{l("IsCompulsory")}}
+										<span></span>
+									</label>
+									<validation-messages [formCtrl]="DocumentUpload_IsCompulsory"></validation-messages>
+								</div>
+					
+								<br/><div class="m-checkbox-list">
+									<label for="DocumentUpload_IsRenewable" class="kt-checkbox">
+										<input id="DocumentUpload_IsRenewable" #DocumentUpload_IsRenewable="ngModel" type="checkbox" name="IsRenewable" [(ngModel)]="documentUpload.isRenewable"> 
+										{{l("IsRenewable")}}
+										<span></span>
+									</label>
+									<validation-messages [formCtrl]="DocumentUpload_IsRenewable"></validation-messages>
+								</div>
+					
+								<br/><div class="m-checkbox-list">
+									<label for="DocumentUpload_IsActive" class="kt-checkbox">
+										<input id="DocumentUpload_IsActive" #DocumentUpload_IsActive="ngModel" type="checkbox" name="IsActive" [(ngModel)]="documentUpload.isActive"> 
+										{{l("IsActive")}}
+										<span></span>
+									</label>
+									<validation-messages [formCtrl]="DocumentUpload_IsActive"></validation-messages>
+								</div> -->
+                </div>
+                <div class="modal-footer">
+                    <button
+                        [disabled]="saving"
+                        type="button"
+                        class="btn btn-default"
+                        (click)="close()"
+                    >
+                        {{ l("Cancel") }}
+                    </button>
+                    <button
+                        type="submit"
+                        class="btn btn-primary blue"
+                        [disabled]="!documentUploadForm.form.valid"
+                        [buttonBusy]="saving"
+                        [busyText]="l('SavingWithThreeDot')"
+                    >
+                        <i class="fa fa-save"></i> <span>{{ l("Save") }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+#create_vendor_tabset_container li.nav-item.ng-star-inserted:nth-child(1n+6) {
+    font-weight: bolder;
+    background-color: aqua;
+    border-radius: 10px 10px 0px 0px;
+  }
+
+  ::ng-deep .btn-group{
+    height: calc(1.5em + 1.3rem + 2px) !important;   
+
+  }
+  ::ng-deep .btn-group > button{
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+
+  }
+  #dropdown-basic{
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  /* #tableHorizontalScroll{
+    overflow-x: auto;
+  } */
+  

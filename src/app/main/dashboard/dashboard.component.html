@@ -1,0 +1,85 @@
+<!-- <customizable-dashboard [dashboardName]="dashboardName"></customizable-dashboard> -->
+
+<div [@routerTransition]>
+    <div class="content d-flex flex-column flex-column-fluid">
+        <sub-header [title]="'Vendor' | localize" [description]="'| Dashboard'">
+            <div role="actions">
+                <div class="card-body text-center" *ngIf="hidequerylink">
+                    <a [href]="appBaseUrl + '/app/main/vendorMgt/querydetails'">You have Pending Enquiry</a>
+                </div>
+            </div>
+        </sub-header>
+
+        <div [class]="containerClass">
+            <div class="card card-custom">
+                <div class="card-body" [busyIf]="primengTableHelper.isLoading">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <ng-container *ngComponentOutlet="widgetTenantTopStat"></ng-container>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div [class]="containerClass" class="mt-10">
+            <div class="card card-custom">
+                <div class="card-body" [busyIf]="primengTableHelper.isLoading">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+
+                            <div class="card card-custom h-100">
+                                <div class="card-header align-items-center border-0">
+                                    <h3 class="card-title align-items-start flex-column">
+                                        <span class="font-weight-bolder text-dark">
+                                            Recent Vendors
+                                        </span>
+                                    </h3>
+
+                                </div>
+                                <div class="card-body" [perfectScrollbar]>
+                                    <div class="table-responsive" style="max-height: 500px;">
+                                        <!--begin::Table-->
+                                        <table class="table">
+                                            <!--begin::Thead-->
+                                            <thead>
+                                                <tr>
+                                                    <td class="m-widget11__app">Company Name</td>
+                                                    <td class="m-widget11__sales">Phone Number</td>
+                                                    <td class="m-widget11__sales">Email</td>
+                                                    <td class="m-widget11__sales">Rc Number</td>
+                                                    <td class="m-widget11__total">Date of Creation</td>
+
+                                                </tr>
+                                            </thead>
+                                            <!--end::Thead-->
+                                            <!--begin::Tbody-->
+                                            <tbody>
+                                                <tr *ngFor="let stat of primengTableHelper.records; let index = index">
+                                                    <td>{{stat.name}}</td>
+                                                    <td>{{stat.phoneNumber}}</td>
+                                                    <td>{{stat.email}}</td>
+                                                    <td>{{stat.rcNumber}}</td>
+                                                    <td>{{stat.registrationDate | luxonFormat:'yyyy-LL-dd HH:mm:ss'}}
+                                                    </td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+<app-widget-vendor-stats></app-widget-vendor-stats>

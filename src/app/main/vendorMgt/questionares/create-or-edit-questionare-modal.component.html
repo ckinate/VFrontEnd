@@ -1,0 +1,48 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #questionareForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="questionare.id">{{l("Edit Questionnaire")}}</span>
+                        <span *ngIf="!questionare.id">{{l("Create New Questionnaire")}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class=" row">
+                        <div class="col-md-8 form-group">
+                            <label for="Questionare_Question">{{l("Question")}}</label>
+                            <input type="text" pattern="[a-zA-Z0-9 \&_?'-]*" #Questionare_Question="ngModel" id="Questionare_Question" class="form-control" [(ngModel)]="questionare.question" name="Question"    />
+                            <validation-messages [formCtrl]="Questionare_Question"></validation-messages>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="compulsory"></label><br>
+                            <input type="checkbox" name="Compulsory" id="compulsory"  [(ngModel)] = "questionare.isCompulsory" />
+                            {{"Is Compulsory?"|localize}}
+
+                        </div>
+
+
+                    </div>
+
+								<!-- <br/><div class="m-checkbox-list">
+									<label for="Questionare_Attachment" class="kt-checkbox">
+										<input id="Questionare_Attachment" #Questionare_Attachment="ngModel" type="checkbox" name="Attachment" [(ngModel)]="questionare.attachment">
+										{{l("Attachment")}}
+										<span></span>
+									</label>
+									<validation-messages [formCtrl]="Questionare_Attachment"></validation-messages>
+								</div> -->
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default" (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!questionareForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{l("Save")}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

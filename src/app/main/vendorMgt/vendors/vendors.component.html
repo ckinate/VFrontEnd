@@ -1,0 +1,594 @@
+﻿<div [@routerTransition]>
+    <div class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <sub-header [title]="'Vendor' | localize" [description]="'Details' | localize">
+            <div class="card-body text-center" *ngIf="hidequerylink">
+                <a [href]="appBaseUrl + '/app/main/vendorMgt/querydetails'">Click to Answer Pending Query</a>
+            </div>
+            <div role="actions" *ngIf="'Pages.Vendor.Create'| permission">
+                <button (click)="createVendor()" class="btn btn-primary blue">
+                    <i class="fa fa-plus"></i> {{ l("Create New Vendor") }}
+                </button>
+            </div>
+        </sub-header>
+        <div [class]="containerClass">
+            <div class="card card-custom">
+                <div class="card-body">
+                    <form class="kt-form" autocomplete="off">
+                        <div>
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="VendorStatus">{{
+                                            "Vendor Status" | localize
+                                            }}</label>
+                                        <select id="VendorStatus" name="VendorStatus" class="form-control"
+                                            [(ngModel)]="vendorStatus" (change)="getVendorsModified()">
+                                            <option value="1">
+                                                {{ "Active" | localize }}
+                                            </option>
+                                            <option value="2">
+                                                {{ "Unauthorized" | localize }}
+                                            </option>
+                                            <option value="3">
+                                                {{ "Declined" | localize }}
+                                            </option>
+                                            <!-- <option value="4">
+                                                {{"Edited (Pending Approval)"| localize}}
+                                            </option> -->
+                                            <option value="6">
+                                                {{ "Inactive" | localize }}
+                                            </option>
+                                            <!-- <option value="7">
+                                                {{
+                                                "DeActivated (Pending Approval)"
+                                                | localize
+                                                }}
+                                            </option>
+                                            <option value="8">
+                                                {{
+                                                "Activated (Pending Approval)"
+                                                | localize
+                                                }}
+                                            </option> -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row align-items-center">
+                        <div class="col-md-12">
+                            <!--<Primeng-TurboTable-Start>-->
+                            <div class="primeng-datatable-container" [busyIf]="primengTableHelper.isLoading">
+                                <p-table #dataTable [value]="primengTableHelper.records" [rows]="10"
+                                    [rowsPerPageOptions]="[5, 10, 15, 20]" rows="{{
+                                        primengTableHelper.defaultRecordsCountPerPage
+                                    }}" [lazy]="false" scrollable="true" [paginator]="true" ScrollWidth="100%"
+                                    responsive="primengTableHelper.isResponsive"
+                                    resizableColumns="primengTableHelper.resizableColumns" dataKey="id"
+                                    [filterDelay]="0" [globalFilterFields]="[
+                                        'vendor.companyName',
+                                        'categoryName',
+                                        'subCategoryName',
+                                        'vendor.vendorNumber',
+                                        'vendor.address',
+                                        'vendor.officePhone',
+                                        'vendor.mobile',
+                                        'vendor.email',
+                                        'vendor.dateRegistered',
+                                        'vendor.taxIdentificationNumber',
+                                        'vendor.contactPerson',
+                                        'vendor.contactDesignation',
+                                        'vendor.contactPhone',
+                                        'vendor.contactEmail',
+                                        'vendor.fax',
+                                        'vendor.website',
+                                        'vendor.companyType'
+                                    ]" [rowHover]="true" styleClass="ui-table-customers" sortMode="multiple">
+                                    <ng-template pTemplate="caption">
+                                        <div style="text-align: right">
+                                            <i class="pi pi-search" style="margin: 4px 4px 0 0"></i>
+                                            <input type="text" size="50" id="search-text" aria-describedby="search-text"
+                                                pInputText (input)="
+                                                    dataTable.filterGlobal(
+                                                        $event.target.value,
+                                                        'contains'
+                                                    )
+                                                " style="width: auto" placeholder="Enter text to search" autofocus />
+                                        </div>
+                                    </ng-template>
+
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th style="width: 130px">
+                                                {{ l("Actions") }}
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.duediligent">
+                                                {{ l("Due Diligent") }}
+                                                <p-sortIcon field="vendor.duediligent"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 100px" pSortableColumn="vendor.nda">
+                                                {{ l("NDA") }}
+                                                <p-sortIcon field="vendor.nda"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.companyName">
+                                                {{ l("Company Name") }}
+                                                <p-sortIcon field="vendor.companyName"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="categoryName">
+                                                {{ l("Category") }}
+                                                <p-sortIcon field="categoryName"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="subCategoryName">
+                                                {{ l("Sub-Category") }}
+                                                <p-sortIcon field="subCategoryName"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.vendorNumber">
+                                                {{ l("Vendor Number") }}
+                                                <p-sortIcon field="vendor.vendorNumber"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.address">
+                                                {{ l("Address") }}
+                                                <p-sortIcon field="vendor.address"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.rcNumber">
+                                                {{ l("RCNumber") }}
+                                                <p-sortIcon field="vendor.rcNumber"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.officePhone">
+                                                {{ l("Office Phone") }}
+                                                <p-sortIcon field="vendor.officePhone"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.mobile">
+                                                {{ l("Mobile") }}
+                                                <p-sortIcon field="vendor.mobile"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.email">
+                                                {{ l("Email") }}
+                                                <p-sortIcon field="vendor.email"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.dateRegistered">
+                                                {{ l("Company Reg. Date") }}
+                                                <p-sortIcon field="vendor.dateRegistered"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.dateRegistered">
+                                                {{ l("Creation Date") }}
+                                                <p-sortIcon field="vendor.creationDate"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.taxIdentificationNumber">
+                                                {{
+                                                l(
+                                                "Tax Identification Number"
+                                                )
+                                                }}
+                                                <p-sortIcon field="vendor.taxIdentificationNumber"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.contactPerson">
+                                                {{ l("Contact Person") }}
+                                                <p-sortIcon field="vendor.contactPerson"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.contactDesignation">
+                                                {{ l("Contact Designation") }}
+                                                <p-sortIcon field="vendor.contactDesignation"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.contactPhone">
+                                                {{ l("Contact Phone") }}
+                                                <p-sortIcon field="vendor.contactPhone"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.contactEmail">
+                                                {{ l("Contact Email") }}
+                                                <p-sortIcon field="vendor.contactEmail"></p-sortIcon>
+                                            </th>
+
+                                            <th style="width: 150px" pSortableColumn="vendor.fax">
+                                                {{ l("Fax") }}
+                                                <p-sortIcon field="vendor.fax"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.website">
+                                                {{ l("website") }}
+                                                <p-sortIcon field="vendor.website"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.companyType">
+                                                {{ l("Company Type") }}
+                                                <p-sortIcon field="vendor.companyType"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px">
+                                                {{ l("Comment history") }}
+
+                                            </th>
+
+                                            <th style="width: 150px" pSortableColumn="vendor.modifyBy">
+                                                {{ l("Modified By") }}
+                                                <p-sortIcon field="vendor.modifyBy"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.modifiedDate">
+                                                {{ l("Modified Date") }}
+                                                <p-sortIcon field="vendor.modifiedDate"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.useforeignAccount">
+                                                {{ l("Use Foreign Account") }}
+                                                <p-sortIcon field="vendor.useforeignAccount"></p-sortIcon>
+                                            </th>
+                                            <th style="width: 150px" pSortableColumn="vendor.customStatus1">
+                                                {{ l("Status") }}
+                                                <p-sortIcon field="vendor.customStatus1"></p-sortIcon>
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-record="$implicit">
+                                        <tr>
+                                            <td style="width: 130px">
+
+                                                <div class="btn-group dropdown" dropdown container="body">
+                                                    <button dropdownToggle
+                                                        class="dropdown-toggle btn btn-sm btn-primary">
+                                                        <i class="fa fa-cog"></i><span class="caret"></span>
+                                                        {{ "Actions" | localize }}
+                                                    </button>
+                                                    <ul class="dropdown-menu" *dropdownMenu>
+
+                                                        <li
+                                                            *ngIf="record.vendor.vendorStatus ==2 ||record.vendor.vendorStatus == 1 ">
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)=" viewVendorModal.show(record.vendor.id)">{{l("View")}}</a>
+                                                        </li>
+                                                        <li
+                                                            *ngIf="(record.vendor.vendorStatus ==1 ||record.vendor.vendorStatus ==3)">
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)="editVendor(record.vendor.id)">{{l("Edit")}}</a>
+                                                        </li>
+                                                        <li *ngIf="(record.vendor.vendorStatus ==2)">
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)=" editVendor(record.vendor.id)">{{l("Edit")}}</a>
+                                                        </li>
+                                                        <li
+                                                            *ngIf="(record.vendor.vendorStatus ==1 ||record.vendor.vendorStatus ==2) && ('Pages.Vendor.Delete'| permission)">
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)="deleteVendor(record.vendor.id)">{{l("Delete")}}</a>
+                                                        </li>
+                                                        <li *ngIf="(record.vendor.vendorStatus ==6) ">
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)="openModal(template,'Activation')">{{l("Activate")}}</a>
+                                                        </li>
+                                                        <li *ngIf="(record.vendor.vendorStatus == 1)  ">
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)="openModal(template,'Deactivation')">{{l("Deactivate")}}</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript:;" class="dropdown-item"
+                                                                (click)=" showDueDiligentModal(record.vendor)"
+                                                                *ngIf="(showVerify(record.vendor) == true) && ('Pages.Vendor.Verify'| permission)">{{"Verify"}}</a>
+                                                        </li>
+                                                        <li
+                                                            *ngIf="'Pages.Vendor.DocumentUploadDescription'| permission">
+                                                            <a href="javascript:;" class="dropdown-item" (click)="
+                                                            ViewDocument(
+                                                                record
+                                                                    .vendor
+                                                                    .vendorNumber
+                                                            )
+                                                        ">
+                                                                {{"View Documents"}} <i class="fa fa-download"></i></a>
+                                                        </li>
+
+
+
+                                                    </ul>
+                                                </div>
+
+
+
+
+
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("DueDiligent") }}</span>
+                                                <span *ngIf="record.vendor.dueDiligence == true"
+                                                    class="btn btn-primary">Yes</span>
+                                                <span *ngIf="record.vendor.dueDiligence == false"
+                                                    class="btn btn-warning">No</span>
+
+                                            </td>
+                                            <td style="width: 100px">
+                                                <span class="ui-column-title">
+                                                    {{ l("NDA") }}</span>
+                                                <span *ngIf=" record.vendor.nda == true"
+                                                    class="btn btn-primary">Yes</span>
+                                                <span *ngIf=" record.vendor.nda == false"
+                                                    class="btn btn-warning">No</span>
+
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("CompanyName") }}</span>
+                                                {{ record.vendor.companyName }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("Category") }}</span>
+                                                {{ record.categoryName }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{
+                                                    l("Sub-Category")
+                                                    }}</span>
+                                                {{ record.subCategoryName }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{
+                                                    l("VendorNumber")
+                                                    }}</span>
+                                                {{ record.vendor.vendorNumber }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("Address") }}</span>
+                                                {{ record.vendor.address }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("RCNumber") }}</span>
+                                                {{ record.vendor.rcNumber }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("OfficePhone") }}</span>
+                                                {{ record.vendor.officePhone }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("Mobile") }}</span>
+                                                {{ record.vendor.mobile }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("Email") }}</span>
+                                                {{ record.vendor.email }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{
+                                                    l("DateRegistered")
+                                                    }}</span>
+                                                <span *ngIf="
+                                                        record.vendor
+                                                            .dateRegistered
+                                                    ">
+                                                    {{record.vendor.dateRegistered| date : "dd / MM / yyyy"}}
+                                                </span>
+                                                <span *ngIf="
+                                                        !record.vendor
+                                                            .dateRegistered
+                                                    ">-</span>
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("Creation Date") }}</span>
+                                                {{ record.vendor.creationDate | date : "dd / MM / yyyy hh:mm:ss" }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{
+                                                    l(
+                                                    "Tax Identification Number"
+                                                    )
+                                                    }}</span>
+                                                {{
+                                                record.vendor
+                                                .taxIdentificationNumber
+                                                }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{
+                                                    l("Contact Person")
+                                                    }}</span>
+                                                {{
+                                                record.vendor.contactPerson
+                                                }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{
+                                                    l("Contact Designation")
+                                                    }}</span>
+                                                {{
+                                                record.vendor
+                                                .contactDesignation
+                                                }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{
+                                                    l("Contact Phone")
+                                                    }}</span>
+                                                {{ record.vendor.contactPhone }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{
+                                                    l("Contact Email")
+                                                    }}</span>
+                                                {{ record.vendor.contactEmail }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("Fax") }}</span>
+                                                {{ record.vendor.fax }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <!-- <span class="ui-column-title">
+                                                    {{ l("website") }}</span> -->
+                                                <a href="https://{{ record.vendor.website }}">{{ record.vendor.website
+                                                    }}</a>
+
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span class="ui-column-title">
+                                                    {{ l("CompanyType") }}</span>
+                                                {{ record.vendor.companyType }}
+                                            </td>
+                                            <td style="width: 150px">
+
+                                                <a (click)="showCommentHistory(record.vendor.vendorNumber)"
+                                                    href="javascript:;" title="Enquiry Transaction"><i
+                                                        class="fas fa-comments"></i></a>
+                                            </td>
+
+                                            <td style="width: 150px">
+
+                                                {{ record.vendor.modifyBy }}
+                                            </td>
+                                            <td style="width: 150px">
+
+                                                {{ record.vendor.modifiedDate | date : "dd / MM / yyyy hh:mm:ss" }}
+                                            </td>
+                                            <td style="width: 150px">
+                                                <span *ngIf="record.vendor.useforeignAccount == true">Yes</span>
+                                                <span *ngIf=" record.vendor.useforeignAccount == false">No</span>
+
+                                            </td>
+                                            <td style="width: 150px">
+
+                                                {{ record.vendor.customStatus1 }}
+                                            </td>
+                                            <ng-template #template>
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title pull-left">
+                                                        Reason for {{ Title }}
+                                                    </h4>
+                                                    <button type="button" class="close pull-right" aria-label="Close"
+                                                        (click)="
+                                                            modalRef.hide()
+                                                        ">
+                                                        <span aria-hidden="true">{{"Close"}}</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="col-md-12">
+                                                        <textarea class="form-control rounded" name="reqNarration"
+                                                            [(ngModel)]="
+                                                                DeclineComment
+                                                            " placeholder="{{
+                                                                'Comments'
+                                                                    | localize
+                                                            }}" pattern="[a-zA-Z0-9 ]*">
+                                                        </textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="col-md-12 text-right">
+                                                            <button type="submit" [disabled]="
+                                                                    DeclineComment ==
+                                                                    null
+                                                                " flex="15" class="btn btn-primary" (click)="
+                                                                    changeStatus(
+                                                                        record.vendor,
+                                                                        Title
+                                                                    )
+                                                                " [buttonBusy]="processing"
+                                                                [busyText]="l('SavingWithThreeDot')">
+                                                                {{
+                                                                "Continue"
+                                                                | localize
+                                                                }}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ng-template>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+
+                                <div class="primeng-no-data" *ngIf="
+                                        primengTableHelper.totalRecordsCount ==
+                                        0
+                                    ">
+                                    {{ l("NoData") }}
+                                </div>
+                                <div class="primeng-paging-container">
+                                    <p-paginator [rows]="
+                                            primengTableHelper.defaultRecordsCountPerPage
+                                        " #paginator (onPageChange)="
+                                            getVendorsModified($event)
+                                        " [totalRecords]="
+                                            primengTableHelper.totalRecordsCount
+                                        " [rowsPerPageOptions]="
+                                            primengTableHelper.predefinedRecordsCountPerPage
+                                        ">
+                                    </p-paginator>
+                                    <span class="total-records-count">{{
+                                        l(
+                                        "TotalRecordsCount",
+                                        primengTableHelper.totalRecordsCount
+                                        )
+                                        }}
+                                    </span>
+                                </div>
+                            </div>
+                            <!--<Primeng-TurboTable-End>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <createOrEditVendorModal #createOrEditVendorModal (modalSave)="getVendorsModified()"></createOrEditVendorModal> -->
+        <createVendorModal #createVendorModal (modalSave)="getVendorsModified()"></createVendorModal>
+        <editVendorModal #editVendorModal (modalSave)="getVendorsModified()"></editVendorModal>
+        <viewVendorModal #viewVendorModal></viewVendorModal>
+        <edit-unapproved-vendor #editUnApproveVendorModal (modalSave)="getVendorsModified()"></edit-unapproved-vendor>
+
+        <app-due-diligence-modal #duediligenceModal (duediligentSave)="getVendorsModified()"></app-due-diligence-modal>
+
+        <appfileupload #fileUpload></appfileupload>
+    </div>
+</div>
+
+
+<div bsModal #commentHistoryModal="bs-modal" (onShown)="onShownCommentHistory()" class="modal fade" tabindex="-1"
+    role="dialog" aria-hidden="true" [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Authorize/Decline Comments </h5>
+                <button type="button" class="close" (click)="closeCommentHistory()" [attr.aria-label]="l('Close')">
+                    <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="alert alert-warning mt-2" *ngIf="NoComment != undefined">{{NoComment}}</div>
+                <div class="row align-items-center">
+                    <div class="table-responsive" style="max-height: 500px;">
+                        <!--begin::Table-->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <td class="width: 200px">Comments</td>
+                                    <td class="width: 100px">Authorizer</td>
+                                    <td class="width: 100px">Date of comments</td>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let i of  approvalCommentList; let index = index">
+
+                                    <td class="width: 200px">{{i.comments}}</td>
+                                    <td class="width: 100px">{{i.authorizer}}</td>
+                                    <td class="width: 100px">{{i.dateAuthorised| luxonFormat: "F"}}</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

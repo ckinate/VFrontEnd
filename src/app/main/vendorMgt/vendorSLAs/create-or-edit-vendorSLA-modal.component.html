@@ -1,0 +1,164 @@
+﻿<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+	aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<form *ngIf="active" #vendorSLAForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+				<div class="modal-header">
+					<h4 class="modal-title">
+						<span *ngIf="vendorSLA.id">{{l("EditVendorSLA")}}</span>
+						<span *ngIf="!vendorSLA.id">{{l("Create New Service Level Agreement")}}</span>
+					</h4>
+					<button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-row">
+
+						<div class="form-group col-md-6">
+							<label for="VendorCompanyName">{{l("Vendor")}}</label>
+							<select name="vendorSLA.vendorId" [(ngModel)]="vendorSLA.vendorId" class="form-control">
+								<option value="">{{l("SelectAVendor")}}</option>
+								<option *ngFor="let item of vendorList" value="{{item.id}}">{{item.companyName}}
+								</option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label for="CurrencyCurrencyName">{{l("Currency")}}</label>
+							<select name="vendorSLA.currencyId" [(ngModel)]="vendorSLA.currencyId" class="form-control">
+								<option value="">{{l("SelectACurrency")}}</option>
+								<option *ngFor="let item of allCurrencys" value="{{item.id}}">{{item.displayName}}
+								</option>
+							</select>
+						</div>
+
+
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<label for="ContractTypeDescription">{{l("ContractType")}}</label>
+							<select name="vendorSLA.contractTypeId" [(ngModel)]="vendorSLA.contractTypeId"
+								class="form-control">
+								<option value="">{{l("SelectAContractType")}}</option>
+								<option *ngFor="let item of allContractTypes" value="{{item.id}}">{{item.displayName}}
+								</option>
+							</select>
+						</div>
+
+
+						<div class="form-group col-md-4">
+							<label for="VendorSLA_PaymentTerms">{{l("PaymentTerms")}}</label>
+							<validation-messages [formCtrl]="VendorSLA_PaymentTerms"></validation-messages>
+							<select id="VendorSLA_PaymentTerms" class="form-control" #VendorSLA_PaymentTerms="ngModel"
+								[(ngModel)]="vendorSLA.paymentTerms" name="PaymentTerms">
+								<option>Advance </option>
+								<option>Arials </option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-4">
+							<label for="VendorSLA_PaymentPeriod">{{l("PaymentPeriod")}}</label>
+							<select id="VendorSLA_PaymentPeriod" class="form-control" #VendorSLA_PaymentPeriod="ngModel"
+								[(ngModel)]="vendorSLA.paymentPeriod" name="PaymentPeriod">
+								<option>Monthly </option>
+								<option>Quaterly </option>
+								<option>Yearly </option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<label for="VendorSLA_CommencementDate">{{l("CommencementDate")}}</label>
+							<input required class="form-control m-input" #VendorSLA_CommencementDate type="datetime"
+								bsDatepicker datePickerLuxonModifier [(date)]="vendorSLA.commencementDate"
+								[minDate]="date"
+								pattern="[a-zA-Z0-9 ]*"
+								id="VendorSLA_CommencementDate" name="VendorSLA_CommencementDate">
+							<validation-messages [formCtrl]="VendorSLA_CommencementDate"></validation-messages>
+						</div>
+
+						<div class="form-group col-md-4">
+							<label for="VendorSLA_ExpirationDate">{{l("ExpirationDate")}}</label>
+							<input type="text" #VendorSLA_ExpirationDate="ngModel" id="VendorSLA_ExpirationDate"
+								class="form-control" [(ngModel)]="vendorSLA.expirationDate" name="ExpirationDate" pattern="[a-zA-Z0-9 ]*" />
+							<validation-messages [formCtrl]="VendorSLA_ExpirationDate"></validation-messages>
+						</div>
+						<!-- <div class="form-group col-md-4">
+							<label for="VendorSLA_ExpirationDate">{{l("ExpirationDate")}}</label>
+							<input required class="form-control m-input" #VendorSLA_ExpirationDate type="datetime"
+								bsDatepicker datePickerMomentModifier [(date)]="vendorSLA.expirationDate"
+								id="VendorSLA_ExpirationDate" name="ExpirationDate">
+							<validation-messages [formCtrl]="VendorSLA_ExpirationDate"></validation-messages>
+						</div> -->
+
+						<div class="form-group col-md-4">
+							<label for="VendorSLA_ContractSum">{{l("ContractSum")}}</label>
+							<validation-messages [formCtrl]="VendorSLA_ContractSum"></validation-messages>
+							<select id="VendorSLA_ContractSum" class="form-control" #VendorSLA_ContractSum="ngModel"
+								[(ngModel)]="vendorSLA.contractSum" name="ContractSum">
+								<option>Fixed</option>
+								<option>Rate</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<label for="VendorSLA_Value">{{l("Value")}}</label>
+							<input type="text" #VendorSLA_Value="ngModel" id="VendorSLA_Value" class="form-control"
+								[(ngModel)]="vendorSLA.value" name="Value" pattern="[a-zA-Z0-9 ]*" />
+							<validation-messages [formCtrl]="VendorSLA_Value"></validation-messages>
+						</div>
+
+						<div class="form-group col-md-4">
+							<label for="VendorSLA_Frequency">{{l("Frequency")}}</label>
+							<input type="text" #VendorSLA_Frequency="ngModel" id="VendorSLA_Frequency"
+								class="form-control" [(ngModel)]="vendorSLA.frequency" name="Frequency" pattern="[a-zA-Z0-9 ]*" />
+							<validation-messages [formCtrl]="VendorSLA_Frequency"></validation-messages>
+						</div>
+
+						<div class="form-group col-md-4">
+							<label for="VendorSLA_Reminder">{{l("Reminder")}}</label>
+							<input required class="form-control m-input" #VendorSLA_Reminder type="datetime"
+								bsDatepicker datePickerMomentModifier [(date)]="vendorSLA.reminder"
+								id="VendorSLA_Reminder" name="VendorSLA_Reminder" pattern="[a-zA-Z0-9 ]*">
+							<validation-messages [formCtrl]="VendorSLA_Reminder"></validation-messages>
+						</div>
+					</div>
+					<div class="form-row">
+					<!-- <div class="form-group col-md-4">
+						<label for="status">{{l("Status")}}</label>
+						<validation-messages [formCtrl]="status"></validation-messages>
+						<select id="status" class="form-control" #status="ngModel"
+							[(ngModel)]="vendorSLA.status" name="status">
+							<option value="Active">Active </option>
+							<option value="Suspended">Suspended </option>
+							<option value="Cancled">Cancel</option>
+						</select>
+					</div> -->
+					<div class="form-group col-md-12">
+						<label for="VendorSLA_Remark">{{l("Remark")}}</label>
+						<validation-messages [formCtrl]="VendorSLA_Remark"></validation-messages>
+						<textarea type="text" #VendorSLA_Remark="ngModel" id="VendorSLA_Remark" class="form-control"
+							[(ngModel)]="vendorSLA.remark" name="Remark" pattern="[a-zA-Z0-9 ]*"></textarea>
+					</div>
+					</div>
+					<div class="form-group ">
+						
+					</div>
+
+
+				</div>
+				<div class="modal-footer">
+					<button [disabled]="saving" type="button" class="btn btn-default"
+						(click)="close()">{{l("Cancel")}}</button>
+					<button type="submit" class="btn btn-primary blue" [disabled]="!vendorSLAForm.form.valid"
+						[buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+						<span>{{l("Save")}}</span></button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</div>

@@ -1,0 +1,112 @@
+<div [@routerTransition]>
+
+    <div class="content d-flex flex-column flex-column-fluid">
+
+        <sub-header [title]="'Setting' | localize">
+        </sub-header>
+
+        <div [class]="containerClass" class="mt-3">
+            <div class="card card-custom">
+
+                <div class="card-body" [busyIf]="primengTableHelper.isLoading">
+
+                    <form autocomplete="off" #EmailSettingForm="ngForm" (ngSubmit)=" Save(EmailSettingForm)">
+
+                        <div class="row">
+                            <div class="col-6 text-center form-group">
+                                <label id="emailSetting">{{"Receiver Email"|localize}}<span
+                                        style="color: red;">*</span></label>
+                                <input type="email" #emailInput="ngModel" class="form-control" id="emailSetting"
+                                    name="emailSetting" [(ngModel)]="createOrEditEmail.notificationEmail" required />
+                                <validation-messages [formCtrl]="emailInput"></validation-messages>
+                            </div>
+                            <div class="col-3 mt-10">
+                                <label>
+                                    <input type="checkbox" name="enableDefaulttinName" id="enableDefaultTinId"
+                                        [(ngModel)]="createOrEditEmail.enableDefaultTin">
+                                    {{"Enable Default Tin?"}}
+                                </label>
+                            </div>
+
+                            <div class="col-3 form-group">
+                                <label>{{"Default Tin"|localize}}</label>
+                                <input type="text" name="DefaultTinName" id="defaultTinID" class="form-control"
+                                    [(ngModel)]="createOrEditEmail.defaultTin">
+                            </div>
+
+                            <div class="col-3 form-group">
+                                <label>{{"Default Currency"|localize}}</label>
+                                <ng-select [(ngModel)]="createOrEditEmail.defaultCurrency" name="defaultCurrencyName">
+                                    <ng-option *ngFor="let currency of currencyDtoList"
+                                        [value]="currency.currencyName">{{currency.currencyName}}</ng-option>
+                                </ng-select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-12  form-group" style="display: flex; justify-content: right;">
+                            <button type="submit" class="btn btn-primary" [buttonBusy]="saving"
+                                [busyText]="l('SavingWithThreeDot')" [disabled]="!createOrEditEmail.notificationEmail">
+                                <span *ngIf="createOrEditEmail.id == undefined">
+                                    Save
+                                </span>
+                                <span *ngIf="createOrEditEmail.id != undefined">
+                                    Update
+                                </span>
+
+                            </button>
+
+                        </div>
+                    </form>
+
+                    <!-- <div class="table-responsive">
+
+                        <table class="table">
+
+                            <thead>
+                                <th style="width: 50px">Action</th>
+                                <th style="width: 100px">Email</th>
+                            </thead>
+
+                            <tbody>
+
+                                <tr *ngFor="let record of getOnlineSetting; let index = index">
+
+                                    <td style="width: 50px">
+                                        <div class="btn-group dropdown" dropdown container="body">
+
+                                            <button class="dropdown-toggle btn btn-sm btn-primary"
+                                            dropdownToggle>
+                                            <i class="fa fa-cog"></i><span class="caret"></span>
+                                            {{ l("Actions") }}
+                                            </button>
+                                            <ul class="dropdown-menu" *dropdownMenu>
+                                                <li>
+                                                    <a href="javascript:;"
+                                                    (click)=" Edit(record.id)">{{l("Edit")}}</a>
+                                                </li>
+                                            </ul>
+
+                                         </div>
+                                    </td>
+
+                                    <td style="width: 100px;">
+                                        {{record.notificationEmail}}
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div> -->
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

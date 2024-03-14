@@ -1,0 +1,53 @@
+<div [@routerTransition]>
+
+    <div class="content d-flex flex-column flex-column-fluid" [busyIf]="primengTableHelper.isLoading">
+        <sub-header [title]="'Manage One Time Vendor' | localize" >
+                
+        </sub-header>
+
+
+        <div [class]="containerClass ">
+            <div class="card card-custom">
+                <div class="card-body">
+
+                    <form #currencyForm="ngForm">  
+                         
+                         <div class="row align-items-center mb-2">
+                            <div class="col-md-12">
+                                <div style="font-weight: bold;font-size: 15px;margin-bottom: 10px;">
+                                   Number of times a One Off Vendor can perform a Requisition
+                                </div>
+                            </div>
+                           <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <input id="numberOfTimes" type="number" name="numberOfTimes"
+                                            [(ngModel)]="numberOfTimes" placeholder="Enter here"
+                                            pattern="[a-zA-Z0-9 ]*"
+                                            (input)="cleanValue()"
+                                            min="0"
+                                            (change)="cleanValue()"
+                                            class="form-control rounded">
+                                    </div>
+                                </div>
+                            </div>
+                           </div>
+                         </div>
+
+
+
+                        <div class="col-md-12  text-right" style="margin-top: 20px;">
+                            <app-erms-button title="Save" (click)="save()" type="others">
+                            </app-erms-button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

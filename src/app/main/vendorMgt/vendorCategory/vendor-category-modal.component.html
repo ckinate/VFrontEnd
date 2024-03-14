@@ -1,0 +1,37 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #itemForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>{{ l("Create New Category") }}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="categoryName">{{
+                            l("Category Name")
+                            }}</label>
+                        <input type="text" #categoryName="ngModel" id="categoryName" class="form-control"
+                            [(ngModel)]="VCategory.categoryName" name="categoryName" min="1" max="100" />
+                        <validation-messages [formCtrl]="categoryName"></validation-messages>
+                    </div>
+                    <div class="modal-footer">
+                        <button [disabled]="saving" type="button" class="btn btn-default" (click)="close()">
+                            {{ l("Cancel") }}
+                        </button>
+                        <button type="submit" class="btn btn-primary blue" [disabled]="!itemForm.form.valid"
+                            [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')">
+                            <i class="fa fa-save"></i>
+                            <span>{{ l("Save") }}</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

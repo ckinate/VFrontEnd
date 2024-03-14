@@ -1,0 +1,129 @@
+﻿<div [@routerTransition]>
+  <div class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+    <sub-header [title]="' Questionnaire Setup' | localize" [description]="'Setup' | localize">
+        <div role="actions">
+            <button (click)="createQuestionare()" class="btn btn-primary blue"><i class="fa fa-plus"></i> {{l("Setup
+                New Questionnaire")}}</button>
+        </div>
+    </sub-header>
+
+
+                <div [class]="containerClass">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                <form class="kt-form" autocomplete="off">
+                    <div>
+
+                        <div class="row align-items-center">
+                            <div class="col-xl-12">
+                                <label for="QuestionSearch">{{"Search" | localize}}</label>
+                                <div class="form-group m-form__group align-items-center">
+                                    <div class="input-group">
+                                        <input [(ngModel)]="filterText" name="filterText" autoFocus
+                                            class="form-control m-input" [placeholder]="l('SearchWithThreeDot')"
+                                            type="text">
+                                        <span class="input-group-btn">
+                                            <button (click)="getQuestionares()" class="btn btn-primary"
+                                                type="submit"><i class="flaticon-search-1"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row align-items-center">
+                    <!--<Primeng-Datatable-Start>-->
+                    <div class="primeng-datatable-container col-12"
+                         [busyIf]="primengTableHelper.isLoading">
+                        <p-table #dataTable
+                                     (onLazyLoad)="getQuestionares($event)"
+                                     [value]="primengTableHelper.records"
+                                     rows="{{primengTableHelper.defaultRecordsCountPerPage}}"
+                                     [paginator]="false"
+                                     [lazy]="true"
+                                     [scrollable]="true"
+                                     ScrollWidth="100%"
+                                     [responsive]="primengTableHelper.isResponsive"
+                                     [resizableColumns]="primengTableHelper.resizableColumns">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th style="width: 130px">{{l('Actions')}}</th>
+                                    <th style="width: 150px" pSortableColumn="question">
+                                        {{l('Question')}}
+                                        <p-sortIcon field="questionare.question"></p-sortIcon>
+                                    </th >
+                                    <th  style="width: 50px;">
+                                        {{l('Compulsory ')}}
+                                    </th>
+                                    <!-- <th style="width: 150px" pSortableColumn="attachment">
+                                        {{l('Attachment')}}
+                                        <p-sortIcon field="questionare.attachment"></p-sortIcon>
+                                    </th> -->
+
+                                </tr>
+                            </ng-template>
+							<ng-template pTemplate="body" let-record="$implicit" let-i="rowIndex">
+                                <tr>
+                                    <td style="width: 130px">
+                                       <div class="btn-group dropdown" dropdown container="body">
+                                            <button class="dropdown-toggle btn btn-sm btn-primary" dropdownToggle>
+                                                <i class="fa fa-cog"></i><span class="caret"></span> {{l("Actions")}}
+                                            </button>
+												<ul class="dropdown-menu"  *dropdownMenu>
+												<li>
+													<a href="javascript:;"
+														(click)="viewQuestionareModal.show(record)">{{l('View')}}</a>
+												</li>
+												<li>
+                                                <a href="javascript:;"
+														(click)="createOrEditQuestionareModal.show(record.questionare.id)">{{l('Edit')}}</a>
+                                                </li>
+												<li>
+											        <a  href="javascript:;"
+														(click)="deleteQuestionare(record.questionare)">{{l('Delete')}}</a>
+												</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td style="width:150px">
+											<span class="ui-column-title"> {{l('Question')}}</span>
+											{{record.questionare.question}}
+										</td>
+                                        <td style="width: 50px;">{{record.questionare.isCompulsory}}</td>
+                                    <!-- <td style="width:150px">
+										<span class="ui-column-title"> {{l('Attachment')}}</span>
+                                        <div *ngIf="record.questionare.attachment" class="text-center"><i class="fa fa-check-circle kt--font-success" title="True"></i></div>
+										<div *ngIf="!record.questionare.attachment" class="text-center"><i class="fa fa-times-circle" title="False"></i></div>
+                                    </td> -->
+
+                                </tr>
+
+                            </ng-template>
+                        </p-table>
+						<div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                            {{l('NoData')}}
+                        </div>
+                        <div class="primeng-paging-container">
+                            <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
+                                         #paginator
+                                         (onPageChange)="getQuestionares($event)"
+                                         [totalRecords]="primengTableHelper.totalRecordsCount"
+                                         [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage">
+                            </p-paginator>
+                            <span class="total-records-count">
+                                {{l('TotalRecordsCount', primengTableHelper.totalRecordsCount)}}
+                            </span>
+                        </div>
+                    </div>
+                    <!--<Primeng-Datatable-End>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <createOrEditQuestionareModal #createOrEditQuestionareModal (modalSave)="getQuestionares()"></createOrEditQuestionareModal>
+    <viewQuestionareModal #viewQuestionareModal></viewQuestionareModal>
+
+  </div>
+</div>

@@ -1,0 +1,1000 @@
+<div [@routerTransition]>
+    <div class="content d-flex flex-column flex-column-fluid">
+        <sub-header [title]="'Vendors Update Request' | localize">
+        </sub-header>
+
+        <div [class]="containerClass" class="mt-3">
+            <div class="card card-custom">
+                <div class="card-body" [busyIf]="primengTableHelper.isLoading">
+                    <div class="row" style="width: 1200px; ">
+                        <div class="col-12 my-5">
+
+
+                            <form class="col-16 " autocomplete="off" #ProductUpload="ngForm" (ngSubmit)="searchInit()">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <div
+                                            style="flex-direction: row; display: flex;border-width: 1px;border-color: black;border-radius: 20px;border-style: solid;">
+                                            <i class="strip-button fa fa-search"
+                                                style="margin-top: 10px;margin-left: 10px;"></i>
+                                            <input id="description" name="description" style="border: 0ch;width: 80%;"
+                                                type="search" multiple="true" (input)="onChange()"
+                                                [(ngModel)]="searchWord" class="form-control rounded"
+                                                placeholder="Search">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-2" style="top: -20px; position: relative;">
+                                        <label for="filterTypes"> {{ l("Status:") }}</label>
+                                        <ng-select placeholder="Select" name="vendorRequestUpdatestatus" id="status"
+                                            [(ngModel)]="status">
+                                            <!-- <ng-option value= 1> Not Started</ng-option> -->
+                                            <ng-option *ngFor="let item of  statusList|keyvalue"
+                                                [value]="item.value">{{item.key}}</ng-option>
+
+                                        </ng-select>
+                                    </div>
+
+
+                                    <div class="col-3 ml-2" style="top: -16px; position: relative;">
+                                        <div>
+                                            Date Range:
+                                        </div>
+                                        <input class="form-control" id="StartEndRange" name="StartEndRange"
+                                            #drp="bsDaterangepicker" readonly="readonly" bsDaterangepicker
+                                            dateRangePickerLuxonModifier [(date)]="dateRange" />
+
+                                    </div>
+
+
+                                    <div class="col-1">
+                                        <button type="submit" (click)="searchInit()" class="btn btn-primary">
+                                            {{ l("Search") }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="card card-custom mt-0">
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+
+                                <div class="primeng-datatable-container">
+                                    <p-table #dataTable [value]="vendorsUpdateRequestDataDto.result.items" [rows]="10"
+                                        [rowsPerPageOptions]="[5, 10, 15, 20]" rows="{{
+                                            primengTableHelper.defaultRecordsCountPerPage
+                                        }}" [lazy]="false" scrollable="true" [paginator]="false" ScrollWidth="100%"
+                                        responsive="primengTableHelper.isResponsive"
+                                        resizableColumns="primengTableHelper.resizableColumns" dataKey="id"
+                                        [filterDelay]="0" [rowHover]="true" styleClass="ui-table-customers"
+                                        sortMode="multiple">
+
+
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th style="width: 130px">
+                                                    {{ l("Actions") }}
+                                                </th>
+                                                <th style="width: 300px" pSortableColumn="resourceDescription">
+                                                    {{ l("Description") }}
+                                                    <p-sortIcon field="resourceDescription"></p-sortIcon>
+                                                </th>
+
+                                                <th style="width: 200px" pSortableColumn="requesterName">
+                                                    {{ l("Requester Name") }}
+                                                    <p-sortIcon field="requesterName"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 200px" pSortableColumn="requesterEmail">
+                                                    {{ l("Requester Email") }}
+                                                    <p-sortIcon field="requesterEmail"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 200px" pSortableColumn="entryDate">
+                                                    {{ l("Entry Date") }}
+                                                    <p-sortIcon field="entryDate"></p-sortIcon>
+                                                </th>
+                                                <th style="width: 200px">{{"Return Note"}}</th>
+
+
+
+
+
+
+
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-record="$implicit">
+                                            <tr>
+                                                <td style="width: 130px">
+                                                    <div class="btn-group dropdown" dropdown container="body">
+                                                        <button class="dropdown-toggle btn btn-sm btn-primary"
+                                                            dropdownToggle>
+                                                            <i class="fa fa-cog"></i><span class="caret"></span>
+                                                            {{ l("Actions") }}
+                                                        </button>
+                                                        <ul class="dropdown-menu" *dropdownMenu>
+                                                            <li>
+                                                                <a href="javascript:;" class="dropdown-item"
+                                                                    (click)=" viewDetails(record.id)">{{l("View
+                                                                    Details")}}</a>
+                                                            </li>
+                                                            <li *ngIf="record.status == variousStatus.New">
+                                                                <a href="javascript:;" class="dropdown-item"
+                                                                    (click)=" AcceptVendor(record.id)">{{l("Accept")}}</a>
+                                                            </li>
+
+
+
+                                                            <li *ngIf="record.status == variousStatus.Accepted">
+                                                                <a href="javascript:;" class="dropdown-item"
+                                                                    (click)="CompleteVendorUpdateRequest(record.id)">{{l("Complete
+                                                                    Update Request")}}</a>
+                                                            </li>
+
+                                                            <li
+                                                                *ngIf="record.status == variousStatus.Accepted || record.status == variousStatus.New">
+                                                                <a href="javascript:;" class="dropdown-item"
+                                                                    (click)="openRejectModal(record.id)">{{l("Return")}}</a>
+                                                            </li>
+
+
+
+
+
+
+                                                        </ul>
+                                                    </div>
+                                                </td>
+
+                                                <td style="width: 300px">
+                                                    {{ record.resourceDescription }}
+                                                </td>
+
+                                                <td style="width: 200px">
+                                                    {{ record.requesterName }}
+                                                </td>
+                                                <td style="width: 200px">
+                                                    {{ record.requesterEmail}}
+                                                </td>
+                                                <td style="width: 200px">
+                                                    {{ record.entryDate |date:'dd / MM / yyyy, h:mm a' }}
+                                                </td>
+                                                <td style="width: 200px">
+                                                    <span class="ui-column-title"></span>
+                                                    <a href="javascript:;" (click)="openReturnNoteModal(record.note)"
+                                                        title="Click to see Return Comment History"
+                                                        *ngIf="record.status == variousStatus.Rejected"><i
+                                                            class="fas fa-comments"></i></a>
+
+                                                </td>
+
+
+
+
+
+
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+
+                                    <div *ngIf="vendorsUpdateRequestDataDto?.result?.items?.length > 0"
+                                        class="d-flex justify-content-between align-items-center flex-wrap">
+                                        <div class="d-flex flex-wrap py-2 mr-3">
+                                            <button (click)="previousPage()"
+                                                [disabled]="!vendorUpdateRequestResultDto.hasPreviousPage"
+                                                class="btn btn-icon btn-sm btn-light-primary mr-2 my-1"><i
+                                                    class="ki ki-bold-arrow-back icon-xs"></i></button>
+                                            <span class="text-muted px-3 my-3">Page
+                                                {{vendorUpdateRequestResultDto.pageNumber}}
+                                                of
+                                                {{vendorUpdateRequestResultDto.totalPages}}</span>
+                                            <button (click)="nextPage()"
+                                                [disabled]="!vendorUpdateRequestResultDto.hasNextPage"
+                                                class="btn btn-icon btn-sm btn-light-primary mr-2 my-1"><i
+                                                    class="ki ki-bold-arrow-next icon-xs"></i></button>
+                                        </div>
+                                        <div class="d-flex align-items-center py-3">
+                                            <div class="d-flex align-items-center" *ngIf="isLoading">
+                                                <div class="mr-2 text-muted">Loading...</div>
+                                                <div class="spinner spinner-primary mr-10"></div>
+                                            </div>
+
+                                            <select
+                                                class="form-control form-control-sm text-primary font-weight-bold mr-4 border-0 bg-light-primary"
+                                                style="width: 75px;" (change)="changeSize($event.target.value)">
+                                                <option value="10">10</option>
+                                                <option value="20">20</option>
+                                                <option value="30">30</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div bsModal #vendorUpdateDetailsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="vendorDetailsModal" aria-hidden="true" [config]="{ backdrop: 'static' }">
+
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>{{l("Vendor Update Request Details")}}</span>
+                </h4>
+                <button type="button" class="btn btn-default" (click)=" closeModal()">
+                    {{ l("Close") }}
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-6 mb-2 form-group">
+                        <label>{{"Select the Information to display"}}</label>
+                        <ng-select name="availableChangeInfo" [(ngModel)]="vendorChangeInfo">
+                            <ng-option *ngFor="let item of availableChangeTag | keyvalue" [value]="item.value">
+                                {{item.key}}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+
+                    <div class="col-3"></div>
+
+                </div>
+
+
+                <span *ngFor="let vendor of filterVendorDetails ">
+
+                    <span *ngIf="vendorChangeInfo == 'OfficialInformation'">
+                        <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">{{"Official
+                            informations"}}</h4>
+                        <div class="row">
+
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated Company Name:")}}</span>
+                                {{ vendor?.officialInformation?.newDetail?.companyName }}
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Company Name:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.companyName }}
+
+                            </div>
+
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated Address:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.registerAddress }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Address:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.registerAddress }}
+
+                            </div>
+
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated RC NO:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.registrationCertificateNumber }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("RC No:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.registrationCertificateNumber }}
+
+                            </div>
+
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated Tin:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.taxIdentificationNumber }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Tin:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.taxIdentificationNumber }}
+
+                            </div>
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated Email:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.email }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Email:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.email }}
+
+                            </div>
+
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated office Phone:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.officePhoneCallCode
+                                }}{{vendor?.officialInformation?.newDetail?.officePhoneNumber }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("office Phone:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.officePhoneCallCode
+                                }}{{vendor?.officialInformation?.oldDetail?.officePhoneNumber }}
+
+                            </div>
+
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated Mobile
+                                    Number:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.mobilePhoneCallCode
+                                }}{{vendor?.officialInformation?.newDetail?.mobilePhoneNumber }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Mobile Number:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.mobilePhoneCallCode
+                                }}{{vendor?.officialInformation?.oldDetail?.mobilePhoneNumber }}
+
+                            </div>
+
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated Fax:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.fax }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Fax:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.fax }}
+
+                            </div>
+
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated Website:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.website }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Website:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.website }}
+
+                            </div>
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated Category
+                                    Name:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.categoryName }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Category Name:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.categoryName }}
+
+                            </div>
+
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated SubCategory
+                                    Names:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.subCategoryNames }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("SubCategory Names:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.subCategoryNames }}
+
+                            </div>
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated Incorporation Date
+                                    Names:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.incorporationDate|date }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Incorporation Date:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.incorporationDate|date }}
+
+                            </div>
+                            <div class="col-6 mb-2" *ngIf="vendor?.officialInformation?.modify">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Updated Public Company
+                                    Names:")}}</span>
+                                {{vendor?.officialInformation?.newDetail?.isPublic?"Yes":"No" }}
+
+                            </div>
+                            <div class="col-6 mb-2">
+
+                                <span style="font-size: 1em; font-weight: bolder;">{{l("Public Company:")}}</span>
+                                {{vendor?.officialInformation?.oldDetail?.isPublic?"Yes":"No" }}
+
+                            </div>
+
+                        </div>
+
+
+                    </span>
+
+
+                    <span *ngIf="vendorChangeInfo == 'ContactsInformation'">
+                        <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">{{"Contacts
+                            informations"}}</h4>
+
+                        <h6 style="text-align: center; text-decoration: underline;">{{"Old Details"}}</h6>
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="m-widget11__label">{{"Name"}}</th>
+                                        <th class="m-widget11__label">{{"Email"}}</th>
+                                        <th class="m-widget11__label">{{"Phone"}}</th>
+                                        <th class="m-widget11__label">{{"Designation"}}</th>
+                                        <th class="m-widget11__label">{{"Is Default"}}</th>
+
+                                    </tr>
+
+
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let contact of vendor?.contactsInformation?.oldDetail">
+                                        <td>{{contact?.name}}</td>
+                                        <td>{{contact?.email}}</td>
+                                        <td>{{contact?.mobilePhoneCallCode}}{{contact?.mobilePhoneNumber}}
+                                        </td>
+                                        <td>{{contact?.designation}}</td>
+                                        <td>{{contact?.default?"Yes":"No"}}</td>
+
+
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <span *ngIf="vendor?.contactsInformation?.modify">
+                            <h6 style="text-align: center; text-decoration: underline;">{{"Updated Details"}}</h6>
+
+                            <div class="row">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="m-widget11__label">{{"Name"}}</th>
+                                            <th class="m-widget11__label">{{"Email"}}</th>
+                                            <th class="m-widget11__label">{{"Phone"}}</th>
+                                            <th class="m-widget11__label">{{"Designation"}}</th>
+                                            <th class="m-widget11__label">{{"Is Default"}}</th>
+
+                                        </tr>
+
+
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let contact of vendor?.contactsInformation?.newDetail">
+                                            <td>{{contact?.name}}</td>
+                                            <td>{{contact?.email}}</td>
+                                            <td>{{contact?.mobilePhoneCallCode}}{{contact?.mobilePhoneNumber}}
+                                            </td>
+                                            <td>{{contact?.designation}}</td>
+                                            <td>{{contact?.default?"Yes":"No"}}</td>
+
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </span>
+
+                    </span>
+
+                    <span *ngIf="vendorChangeInfo == 'ChannelsInformation'">
+
+                        <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Additional
+                            Contact Channels</h4>
+                        <h6 style="text-align: center; text-decoration: underline;">{{"Old Details"}}</h6>
+
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="m-widget11__label">{{"Type"}}</th>
+                                        <th class="m-widget11__label">{{"Email"}}</th>
+                                        <th class="m-widget11__label">{{"Phone"}}</th>
+
+
+                                    </tr>
+
+
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let moreContact of vendor?.channelsInformation?.oldDetail">
+                                        <td>{{moreContact?.type == 1?"Email":"Phone"}}</td>
+                                        <td>{{moreContact?.email}}</td>
+                                        <td>{{moreContact?.mobilePhoneCallCode}}{{moreContact?.mobilePhoneNumber}}
+                                        </td>
+
+
+
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <span *ngIf="vendor?.channelsInformation?.modify">
+                            <h6 style="text-align: center; text-decoration: underline;">{{"Updated Details"}}</h6>
+                            <div class="row">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="m-widget11__label">{{"Type"}}</th>
+                                            <th class="m-widget11__label">{{"Email"}}</th>
+                                            <th class="m-widget11__label">{{"Phone"}}</th>
+
+
+                                        </tr>
+
+
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let moreContact of vendor?.channelsInformation?.newDetail">
+                                            <td>{{moreContact?.type == 1?"Email":"Phone"}}</td>
+                                            <td>{{moreContact?.email}}</td>
+                                            <td>{{moreContact?.mobilePhoneCallCode}}{{moreContact?.mobilePhoneNumber}}
+                                            </td>
+
+
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </span>
+
+                    </span>
+                    <span *ngIf="vendorChangeInfo == 'AccountsInformation'">
+                        <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;"> Account Details
+                        </h4>
+                        <h6 style="text-align: center; text-decoration: underline;">{{"Old Details"}}</h6>
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th style="white-space: nowrap; padding: 5px;">{{"Account Name"}}</th>
+                                            <th style="white-space: nowrap; padding: 5px;">{{"Account Number"}}</th>
+                                            <th style="white-space: nowrap; padding: 5px;">{{"Bank Name"}}</th>
+                                            <th style="white-space: nowrap; padding: 5px;">Int Bank Name</th>
+                                            <th style="white-space: nowrap; padding: 5px;">Int Account Number
+                                            </th>
+                                            <th style="white-space: nowrap; padding: 5px;">Int Swift Code</th>
+                                            <th style="white-space: nowrap; padding: 5px;">Int Sort Code</th>
+
+
+
+                                        </tr>
+
+
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let vendorBankProfile of vendor?.accountsInformation?.oldDetail">
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                {{vendorBankProfile.accountName}}
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                {{vendorBankProfile.accountNumber}}</td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                {{vendorBankProfile.bankName}}
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                <span>{{vendorBankProfile.intermediaryBankName}}</span>
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                <span>{{vendorBankProfile.intermediaryAccountNumber}}</span>
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                <span>{{vendorBankProfile.intermediarySwiftCode}}</span>
+                                            </td>
+                                            <td style="white-space: nowrap; padding: 3px;">
+                                                <span>{{vendorBankProfile.intermediarySortCode}}</span>
+                                            </td>
+
+
+
+
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+                        <span *ngIf="vendor?.accountsInformation?.modify">
+                            <h6 style="text-align: center; text-decoration: underline;">{{"Updated Details"}}</h6>
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th style="white-space: nowrap; padding: 5px;">{{"Account Name"}}</th>
+                                                <th style="white-space: nowrap; padding: 5px;">{{"Account Number"}}</th>
+                                                <th style="white-space: nowrap; padding: 5px;">{{"Bank Name"}}</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Int Bank Name</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Int Account Number
+                                                </th>
+                                                <th style="white-space: nowrap; padding: 5px;">Int Swift Code</th>
+                                                <th style="white-space: nowrap; padding: 5px;">Int Sort Code</th>
+
+
+
+                                            </tr>
+
+
+                                        </thead>
+
+                                        <tbody>
+                                            <tr
+                                                *ngFor="let vendorBankProfile of vendor?.accountsInformation?.newDetail">
+                                                <td style="white-space: nowrap; padding: 3px;">
+                                                    {{vendorBankProfile.accountName}}
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 3px;">
+                                                    {{vendorBankProfile.accountNumber}}</td>
+                                                <td style="white-space: nowrap; padding: 3px;">
+                                                    {{vendorBankProfile.bankName}}
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 3px;">
+                                                    <span>{{vendorBankProfile.intermediaryBankName}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 3px;">
+                                                    <span>{{vendorBankProfile.intermediaryAccountNumber}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 3px;">
+                                                    <span>{{vendorBankProfile.intermediarySwiftCode}}</span>
+                                                </td>
+                                                <td style="white-space: nowrap; padding: 3px;">
+                                                    <span>{{vendorBankProfile.intermediarySortCode}}</span>
+                                                </td>
+
+
+
+
+
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </span>
+
+                    </span>
+
+                    <span *ngIf="vendorChangeInfo == 'DocumentsInformation'">
+                        <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Documents
+                        </h4>
+                        <h6 style="text-align: center; text-decoration: underline;">{{"Old Details"}}</h6>
+
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="m-widget11__label">{{"Title"}}</th>
+                                        <th class="m-widget11__label">{{"View"}}</th>
+
+
+                                    </tr>
+
+
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let document of vendor?.documentsInformation?.oldDetail">
+                                        <td>{{document?.title}}</td>
+
+                                        <td><a href="{{document?.locationUrl}}" target="_blank">
+                                                <i class="fa fa-download"></i></a></td>
+
+
+
+
+
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <span *ngIf="vendor?.documentsInformation?.modify">
+                            <h6 style="text-align: center; text-decoration: underline;">{{"Updated Details"}}</h6>
+                            <div class="row">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="m-widget11__label">{{"Title"}}</th>
+                                            <th class="m-widget11__label">{{"View"}}</th>
+
+
+                                        </tr>
+
+
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let document of vendor?.documentsInformation?.newDetail">
+                                            <td>{{document?.title}}</td>
+
+                                            <td>
+                                                <span *ngIf="document?.locationUrl">
+                                                    <a href="{{document?.locationUrl}}" target="_blank">
+                                                        <i class="fa fa-download"></i></a>
+                                                </span>
+                                                <span *ngIf="!document?.locationUrl">
+                                                    {{"NA"}}
+                                                </span>
+                                            </td>
+
+
+
+
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </span>
+
+
+
+                    </span>
+
+                    <span *ngIf="vendorChangeInfo == 'QuestionnairesInformation'">
+                        <h4 style="background-color: darkgreen; color: aliceblue; text-align: center;">Questionaire
+                            PreQualification</h4>
+
+                        <h6 style="text-align: center; text-decoration: underline;">{{"Old Details"}}</h6>
+                        <div class="table-scrollable ui-table-customers">
+                            <table class="table table-hover table-light">
+                                <thead>
+                                    <tr class="uppercase">
+                                        <th style="width: 500px">
+                                            {{ l("Question") }}
+                                        </th>
+                                        <th style="width: 300px">
+                                            {{ l("Response") }}
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tr *ngFor="let m of vendor?.questionsInformation?.oldDetail; let i = index">
+                                    <td style="width: 150px">
+                                        <span class="ui-column-title"></span>
+                                        {{ m.question}}
+                                    </td>
+                                    <td style="width: 150px">
+                                        <span class="ui-column-title"></span>
+                                        {{ m.response }}
+                                    </td>
+
+                                </tr>
+                            </table>
+                        </div>
+
+                        <span *ngIf="vendor?.questionsInformation?.modify">
+                            <h6 style="text-align: center; text-decoration: underline;">{{"Updated Details"}}</h6>
+                            <div class="table-scrollable ui-table-customers">
+                                <table class="table table-hover table-light">
+                                    <thead>
+                                        <tr class="uppercase">
+                                            <th style="width: 500px">
+                                                {{ l("Question") }}
+                                            </th>
+                                            <th style="width: 300px">
+                                                {{ l("Response") }}
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tr *ngFor="let m of vendor?.questionsInformation?.newDetail; let i = index">
+                                        <td style="width: 150px">
+                                            <span class="ui-column-title"></span>
+                                            {{ m.question}}
+                                        </td>
+                                        <td style="width: 150px">
+                                            <span class="ui-column-title"></span>
+                                            {{ m.response }}
+                                        </td>
+
+                                    </tr>
+                                </table>
+                            </div>
+
+                        </span>
+
+
+                    </span>
+
+
+
+
+
+
+
+
+
+
+
+                </span>
+            </div>
+
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)=" closeModal()">
+                    {{ l("Close") }}
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div bsModal #rejectModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="vendorDetailsModal"
+    aria-hidden="true" [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4> Return Vendor Update Request</h4>
+                <button type="button" class="close" (click)="closeRejectModal()" [attr.aria-label]="l('Close')">
+                    <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                </button>
+            </div>
+            <form autocomplete="off" novalidate #returnVendorRequestForm="ngForm" (ngSubmit)="Reject()">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class=" col-12 form-group">
+                            <label for="returnRemark">{{
+                                "Return Remark" | localize
+                                }}<span style="color: red;">*</span></label>
+                            <textarea name="reurnRemark" class="form-control" [(ngModel)]="returnRemark"
+                                #ReturnComment="ngModel" required>
+                                    </textarea>
+                            <div *ngIf="ReturnComment.touched">
+
+                                <p *ngIf="ReturnComment.errors?.required" style="color: red;">This is required
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+
+                            <button type="submit" flex="15" [disabled]="!returnVendorRequestForm.form.valid"
+                                class="btn btn-primary" [buttonBusy]="isSavingReject"
+                                [busyText]="l('SavingWithThreeDot')">
+                                {{ "Save" | localize }}
+                            </button>
+                            <button type="button" class="btn btn-default" (click)="closeRejectModal()">
+                                {{ l("Close") }}
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+<div bsModal #rejectNoteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="vendorDetailsModal" aria-hidden="true" [config]="{ backdrop: 'static' }">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4> {{"Return Comment History"}}</h4>
+                <button type="button" class="close" (click)="closeReturnNoteModal()" [attr.aria-label]="l('Close')">
+                    <i aria-hidden="true" class="ki ki-close icon-2x"></i>
+                </button>
+            </div>
+            <form autocomplete="off" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class=" col-12 form-group">
+                            <label for="returnRemark">{{
+                                returnNote | localize
+                                }}</label>
+
+
+                        </div>
+
+                        <div class="modal-footer">
+
+
+                            <button type="button" class="btn btn-default" (click)="closeReturnNoteModal()">
+                                {{ l("Close") }}
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+<onboarding-vendor-query #queryVendorComp (modalSave)="getVendorsUpdateRequestData()"></onboarding-vendor-query>
